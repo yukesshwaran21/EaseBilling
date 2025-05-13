@@ -8,7 +8,7 @@ import "../Dashboard/AdminDashboard.css";
 import { useNavigate } from "react-router-dom";
 // Axios instance with default headers
 const api = axios.create({
-  baseURL: "http://localhost:5000/api",
+  baseURL: "https://easebilling.onrender.com/api",
 });
 
 // Add request interceptor to include token

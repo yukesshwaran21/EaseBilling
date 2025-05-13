@@ -78,14 +78,14 @@ const addMedicine = async (e) => {
     };
 
     console.log("Sending data to server:", dataToSend);
-    console.log("Request URL:", "http://localhost:5000/api/add-item");
+    console.log("Request URL:", "https://easebilling.onrender.com/api/add-item");
     console.log("Request headers:", {
       "Content-Type": "application/json",
       "Authorization": `Bearer ${token}`
     });
 
     const response = await axios.post(
-      "http://localhost:5000/api/add-item",
+      "https://easebilling.onrender.com/api/add-item",
       dataToSend,
       {
         headers: {

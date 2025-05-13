@@ -42,7 +42,7 @@
 //         return;
 //       }
 
-//       const response = await axios.get("http://localhost:5000/api/items", {
+//       const response = await axios.get("https://easebilling.onrender.com/api/items", {
 //         headers: {
 //           'Authorization': `Bearer ${token}`
 //         }
@@ -67,7 +67,7 @@
 //         return;
 //       }
 
-//       const response = await axios.get("http://localhost:5000/api/item-requests", {
+//       const response = await axios.get("https://easebilling.onrender.com/api/item-requests", {
 //         headers: {
 //           'Authorization': `Bearer ${token}`
 //         }
@@ -137,7 +137,7 @@
 
 //       console.log("Sending request data:", requestData);
 
-//       const response = await axios.post("http://localhost:5000/api/request-item", requestData, {
+//       const response = await axios.post("https://easebilling.onrender.com/api/request-item", requestData, {
 //         headers: { "Content-Type": "application/json" }
 //       });
 
@@ -440,7 +440,7 @@ const PharmacistDashboard = () => {
         return;
       }
 
-      const response = await axios.get("http://localhost:5000/api/items", {
+      const response = await axios.get("https://easebilling.onrender.com/api/items", {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -468,7 +468,7 @@ const PharmacistDashboard = () => {
         return;
       }
 
-      const response = await axios.get("http://localhost:5000/api/item-requests", {
+      const response = await axios.get("https://easebilling.onrender.com/api/item-requests", {
         headers: {
           'Authorization': `Bearer ${token}`
         }
@@ -538,7 +538,7 @@ const PharmacistDashboard = () => {
 
       console.log("Sending request data:", requestData);
 
-      const response = await axios.post("http://localhost:5000/api/request-item", requestData, {
+      const response = await axios.post("https://easebilling.onrender.com/api/request-item", requestData, {
         headers: { "Content-Type": "application/json" }
       });
 

@@ -182,7 +182,7 @@ const CashierDashboard = () => {
       setLoginError("Session expired. Please log in again.");
       return;
     }
-    axios.get("http://localhost:5000/api/items", {
+    axios.get("https://easebilling.onrender.com/api/items", {
       headers: {
         Authorization: `Bearer ${token}`
       }
@@ -207,7 +207,7 @@ const CashierDashboard = () => {
         throw new Error("No authentication token found");
       }
 
-      const response = await axios.get("http://localhost:5000/api/invoices", {
+      const response = await axios.get("https://easebilling.onrender.com/api/invoices", {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -363,7 +363,7 @@ const CashierDashboard = () => {
 
     // Then generate invoice
     const response = await axios.post(
-      "http://localhost:5000/api/generate-invoice",
+      "https://easebilling.onrender.com/api/generate-invoice",
       invoiceData,
       {
         headers: {
@@ -432,7 +432,7 @@ const handlePaymentMethodSelect = async (method) => {
       console.log("Processing cash payment..."); // Debug log
       
       // Generate the invoice
-      const response = await axios.post("http://localhost:5000/api/generate-invoice", {
+      const response = await axios.post("https://easebilling.onrender.com/api/generate-invoice", {
         billId,
         customerName,
         customerPhone,
@@ -523,7 +523,7 @@ const handlePaymentMethodSelect = async (method) => {
 const generateAndDownloadBill = async () => {
   try {
     // First, generate the invoice
-    const response = await axios.post("http://localhost:5000/api/generate-invoice", {
+    const response = await axios.post("https://easebilling.onrender.com/api/generate-invoice", {
       billId,
       customerName,
       customerPhone,
@@ -616,7 +616,7 @@ const updateStockQuantities = async (items) => {
     for (const item of items) {
       try {
         const response = await axios.put(
-          `http://localhost:5000/api/items/${item._id}/update-stock`,
+          `https://easebilling.onrender.com/api/items/${item._id}/update-stock`,
           { 
             quantity: item.quantity,
             operation: 'decrease'
@@ -648,7 +648,7 @@ const updateStockQuantities = async (items) => {
 const handleGPayPaymentComplete = async () => {
   try {
     // Generate the invoice
-    const response = await axios.post("http://localhost:5000/api/generate-invoice", {
+    const response = await axios.post("https://easebilling.onrender.com/api/generate-invoice", {
       billId,
       customerName,
       customerPhone,
@@ -816,11 +816,11 @@ const handleDeleteTransaction = async (billId) => {
   if (window.confirm("Are you sure you want to delete this transaction? This action cannot be undone.")) {
     try {
       // First try to delete the invoice
-      const deleteResponse = await axios.delete(`http://localhost:5000/api/invoices/${billId}`);
+      const deleteResponse = await axios.delete(`https://easebilling.onrender.com/api/invoices/${billId}`);
       
       if (deleteResponse.status === 200) {
         // If successful, refresh the transactions list
-        const response = await axios.get("http://localhost:5000/api/invoices");
+        const response = await axios.get("https://easebilling.onrender.com/api/invoices");
         setTransactions(response.data);
         alert("Transaction deleted successfully");
       } else {
@@ -849,7 +849,7 @@ const handleDeleteTransaction = async (billId) => {
 const handleLogin = async (e) => {
   e.preventDefault();
   try {
-    const response = await axios.post("http://localhost:5000/api/login", loginForm);
+    const response = await axios.post("https://easebilling.onrender.com/api/login", loginForm);
     console.log("Login response:", response.data);
     
     if (response.data.token) {
@@ -877,7 +877,7 @@ const addToCart = async (item) => {
   try {
     // Get all items at once
     const token = localStorage.getItem("token");
-    const response = await axios.get("http://localhost:5000/api/items", {
+    const response = await axios.get("https://easebilling.onrender.com/api/items", {
       headers: { Authorization: `Bearer ${token}` }
     });
     
@@ -964,7 +964,7 @@ const fetchStocks = async () => {
       throw new Error("No authentication token found");
     }
 
-    const response = await axios.get("http://localhost:5000/api/items", {
+    const response = await axios.get("https://easebilling.onrender.com/api/items", {
       headers: {
         Authorization: `Bearer ${token}`
       }
@@ -998,7 +998,7 @@ const handleGenerateBill = async () => {
   try {
     const token = localStorage.getItem("token");
     // Get all items at once
-    const itemsResponse = await axios.get("http://localhost:5000/api/items", {
+    const itemsResponse = await axios.get("https://easebilling.onrender.com/api/items", {
       headers: { Authorization: `Bearer ${token}` }
     });
     const allItems = itemsResponse.data;
@@ -1033,7 +1033,7 @@ const handleGenerateBill = async () => {
       paymentMethod: selectedPaymentMethod
     };
     console.log('Sending invoice payload:', invoicePayload);
-    const response = await axios.post("http://localhost:5000/api/generate-invoice", invoicePayload, {
+    const response = await axios.post("https://easebilling.onrender.com/api/generate-invoice", invoicePayload, {
       headers: { Authorization: `Bearer ${token}` }
     });
     if (response.status === 200) {
@@ -1127,7 +1127,7 @@ const updateStockInDatabase = async (itemId, quantity) => {
     }
 
     const response = await axios.put(
-      `http://localhost:5000/api/items/${itemId}/update-stock`,
+      `https://easebilling.onrender.com/api/items/${itemId}/update-stock`,
       { quantity },
       {
         headers: {
@@ -1169,7 +1169,7 @@ const handleDeleteInvoice = async (invoiceId) => {
 
     // Delete the invoice using billId
     const response = await axios.delete(
-      `http://localhost:5000/api/invoices/${invoice.billId}`,
+      `https://easebilling.onrender.com/api/invoices/${invoice.billId}`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -1237,7 +1237,7 @@ const initializeRazorpay = async () => {
 
     // Create order on backend
     const response = await axios.post(
-      "http://localhost:5000/api/create-order",
+      "https://easebilling.onrender.com/api/create-order",
       {
         amount: total * 100, // Razorpay expects amount in paise
         currency: "INR",
@@ -1286,7 +1286,7 @@ const handlePaymentSuccess = async (response) => {
 
     // Verify payment on backend
     const verifyResponse = await axios.post(
-      "http://localhost:5000/api/verify-payment",
+      "https://easebilling.onrender.com/api/verify-payment",
       {
         razorpay_payment_id: response.razorpay_payment_id,
         razorpay_order_id: response.razorpay_order_id,
@@ -1316,7 +1316,7 @@ const handlePaymentSuccess = async (response) => {
 const validateCartItems = async () => {
   try {
     const token = localStorage.getItem("token");
-    const response = await axios.get("http://localhost:5000/api/items", {
+    const response = await axios.get("https://easebilling.onrender.com/api/items", {
       headers: { Authorization: `Bearer ${token}` }
     });
     const backendItems = response.data;
@@ -1339,7 +1339,7 @@ const validateCartItems = async () => {
 
 const filterCartByBackend = async () => {
   const token = localStorage.getItem("token");
-  const response = await axios.get("http://localhost:5000/api/items", {
+  const response = await axios.get("https://easebilling.onrender.com/api/items", {
     headers: { Authorization: `Bearer ${token}` }
   });
   const backendIds = new Set(response.data.map(item => item._id));

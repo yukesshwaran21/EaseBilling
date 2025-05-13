@@ -1,0 +1,90 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* --- Global Simple Table and Search Bar Styles --- */
+.simple-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(60, 60, 90, 0.04);
+  margin-bottom: 24px;
+  border: 1px solid #e5e7eb;
+  overflow: hidden;
+}
+.simple-table th {
+  background: #fafbfc;
+  color: #222;
+  font-weight: 600;
+  font-size: 1rem;
+  padding: 14px 12px;
+  text-align: left;
+  border-bottom: 1px solid #e5e7eb;
+  letter-spacing: 0.01em;
+}
+.simple-table td {
+  padding: 14px 12px;
+  font-size: 1rem;
+  color: #222;
+  border-bottom: 1px solid #f0f1f3;
+}
+.simple-table tr:last-child td {
+  border-bottom: none;
+}
+.simple-table tr {
+  transition: background 0.15s;
+}
+.simple-table tr:hover td {
+  background: #f6f7fa;
+}
+
+.simple-search-box {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  box-shadow: 0 1px 4px rgba(60, 60, 90, 0.03);
+  transition: border 0.2s, box-shadow 0.2s;
+  width: 100%;
+  margin-bottom: 24px;
+}
+.simple-search-box:focus-within {
+  border-color: #4a17e6;
+  box-shadow: 0 0 0 2px #ede9fe;
+}
+.simple-search-icon {
+  color: #bdbdbd;
+  font-size: 1.2rem;
+}
+.simple-search-input {
+  border: none;
+  background: transparent;
+  font-size: 1rem;
+  width: 100%;
+  outline: none;
+  color: #222;
+  padding: 0;
+}
+.simple-search-input::placeholder {
+  color: #bdbdbd;
+  font-size: 1rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 700px) {
+  .simple-table th,
+  .simple-table td {
+    padding: 10px 6px;
+    font-size: 0.95rem;
+  }
+  .simple-search-box {
+    padding: 10px 8px;
+    font-size: 0.95rem;
+  }
+}

@@ -57,11 +57,12 @@ const Login = () => {
         }));
         console.log("Email:", data.email);
   
-        if (data.role === "admin") {
+        const userRole = (data.role || "").toLowerCase();
+        if (userRole === "admin") {
           navigate("/Admin");
-        } else if (data.role === "cashier") {
+        } else if (userRole === "cashier") {
           navigate("/Cashier");
-        } else if (data.role === "labour") {
+        } else if (userRole === "labour") {
           navigate("/Pharmacist", { state: { email: email } });
         }
         console.log("Login Successful");

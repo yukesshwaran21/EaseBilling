@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
-import { FaUsers, FaPills, FaReceipt, FaPlusSquare, FaChartBar, FaClipboardCheck, FaSearch, FaTrash } from "react-icons/fa";
+import { FaUsers, FaPills, FaReceipt, FaPlusSquare, FaChartBar, FaClipboardCheck, FaSearch, FaTrash, FaBars } from "react-icons/fa";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
 import { CheckCircle, XCircle } from "lucide-react";
 import "../Dashboard/AdminDashboard.css";
@@ -75,6 +75,7 @@ const AdminDashboard = () => {
     contact: "",
     image: null,
   });
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -366,7 +367,11 @@ const AdminDashboard = () => {
 
   return (
     <div className="dashboard-container">
-      <div className="sidebar">
+      {/* Hamburger for mobile */}
+      <button className="sidebar-hamburger" onClick={() => setSidebarOpen(!sidebarOpen)}>
+        <FaBars />
+      </button>
+      <div className={`sidebar${sidebarOpen ? " open" : ""}`} onClick={() => sidebarOpen && setSidebarOpen(false)}>
         <h2 className="dashboard-title">Admin Panel</h2>
         <button className={`sidebar-button ${activeTab === "allStocks" ? "active" : ""}`} onClick={() => setActiveTab("allStocks")}>
           <FaPills /> Items
@@ -399,7 +404,7 @@ const AdminDashboard = () => {
 
       </div>
 
-      <div className="admin-content">
+      <div className="admin-content" onClick={() => sidebarOpen && setSidebarOpen(false)}>
         {activeTab === "allStocks" && (
           <div className="card">
             <h3>Items Inventory</h3>

@@ -830,6 +830,7 @@ import {
   Plus,
 } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
+import "../Dashboard/PharmacistDashboard.css"
 
 export default function PharmacistDashboard() {
   const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem("token"))

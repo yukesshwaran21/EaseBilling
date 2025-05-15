@@ -804,41 +804,36 @@
 
 
 
-
-
 "use client"
 
 import { useEffect, useState } from "react"
 import axios from "axios"
 import { useLocation, useNavigate } from "react-router-dom"
 import {
-  Package,
+  Package2,
   ShoppingCart,
   Search,
   LogOut,
-  Calendar,
   DollarSign,
+  Percent,
+  Factory,
   Truck,
-  User,
   Phone,
-  Layers,
-  Grid,
-  Zap,
-  MapPin,
-  Box,
-  Clock,
   Plus,
+  Loader2,
 } from "lucide-react"
 import { motion, AnimatePresence } from "framer-motion"
-import "../Dashboard/PharmacistDashboard.css"
+import "./PharmacistDashboard.css"
 
-export default function PharmacistDashboard() {
+const PharmacistDashboard = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem("token"))
   const navigate = useNavigate()
   const [activeTab, setActiveTab] = useState("allStocks")
   const [medicines, setMedicines] = useState([])
   const [requests, setRequests] = useState([])
   const [searchTerm, setSearchTerm] = useState("")
+  const [loading, setLoading] = useState(true)
+  const [submitting, setSubmitting] = useState(false)
   const [formData, setFormData] = useState({
     medicineName: "",
     batchNumber: "",
@@ -860,8 +855,13 @@ export default function PharmacistDashboard() {
   const email = location.state?.email
 
   useEffect(() => {
-    fetchMedicines()
-    fetchRequests()
+    const fetchData = async () => {
+      setLoading(true)
+      await Promise.all([fetchMedicines(), fetchRequests()])
+      setLoading(false)
+    }
+
+    fetchData()
   }, [])
 
   const fetchMedicines = async () => {
@@ -879,15 +879,14 @@ export default function PharmacistDashboard() {
       })
 
       console.log("Fetched items:", response.data)
-
-      // Ensure the response data is an array
       setMedicines(Array.isArray(response.data) ? response.data : [])
     } catch (error) {
       console.error("Error fetching medicines:", error.response?.data || error)
       if (error.response?.status === 401) {
-        alert("Please log in again to continue")
+        showNotification("Session expired. Please log in again.", "error")
+        handleLogout()
       } else {
-        alert("Failed to fetch items. Please try again later.")
+        showNotification("Failed to fetch items. Please try again later.", "error")
       }
     }
   }
@@ -910,15 +909,31 @@ export default function PharmacistDashboard() {
     } catch (error) {
       console.error("Error fetching requests:", error.response?.data || error)
       if (error.response?.status === 401) {
-        alert("Please log in again to continue")
+        showNotification("Session expired. Please log in again.", "error")
+        handleLogout()
       } else {
-        alert("Failed to fetch requests. Please try again later.")
+        showNotification("Failed to fetch requests. Please try again later.", "error")
       }
     }
   }
 
   const handleImageChange = (e) => {
     setFormData({ ...formData, image: e.target.files[0] })
+  }
+
+  const [notification, setNotification] = useState({ message: "", type: "", visible: false })
+
+  const showNotification = (message, type = "success") => {
+    setNotification({ message, type, visible: true })
+    setTimeout(() => {
+      setNotification((prev) => ({ ...prev, visible: false }))
+    }, 3000)
+  }
+
+  const handleLogout = () => {
+    localStorage.removeItem("token")
+    setIsAuthenticated(false)
+    navigate("/login")
   }
 
   const requestMedicine = async () => {
@@ -935,21 +950,25 @@ export default function PharmacistDashboard() {
       !formData.supplierContact.trim() ||
       !email
     ) {
-      alert("Please fill in all required fields: Item Name, Quantity, Amps, Watt, Supplier Name, Supplier Contact")
+      showNotification(
+        "Please fill in all required fields: Item Name, Quantity, Amps, Watt, Supplier Name, Supplier Contact",
+        "error",
+      )
       return
     }
 
     if (Number.parseInt(formData.quantity) <= 0) {
-      alert("Quantity must be a positive number")
+      showNotification("Quantity must be a positive number", "error")
       return
     }
 
     if (!/^\d{10}$/.test(formData.supplierContact.trim())) {
-      alert("Supplier Contact must be a valid 10-digit phone number")
+      showNotification("Supplier Contact must be a valid 10-digit phone number", "error")
       return
     }
 
     try {
+      setSubmitting(true)
       const requestData = {
         itemName: formData.medicineName,
         brand: formData.batchNumber,
@@ -975,7 +994,7 @@ export default function PharmacistDashboard() {
       })
 
       console.log("Server response:", response.data)
-      alert("Request sent to admin")
+      showNotification("Request sent to admin successfully!")
       fetchRequests()
       setFormData({
         medicineName: "",
@@ -996,534 +1015,450 @@ export default function PharmacistDashboard() {
       })
     } catch (error) {
       console.error("Error requesting medicine:", error.response?.data || error)
-      alert(`Failed to request medicine: ${error.response?.data?.error || "Unknown error"}`)
+      showNotification(`Failed to request medicine: ${error.response?.data?.error || "Unknown error"}`, "error")
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
+  const formatDate = (dateString) => {
+    if (!dateString) return "N/A"
+    try {
+      return new Date(dateString).toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+      })
+    } catch (e) {
+      return "Invalid Date"
     }
   }
 
   return (
-    <div className="flex h-screen bg-gradient-to-r from-sky-50 to-indigo-50 font-sans">
-      {/* Sidebar */}
-      <motion.div
-        initial={{ x: -100, opacity: 0 }}
-        animate={{ x: 0, opacity: 1 }}
-        transition={{ duration: 0.5 }}
-        className="w-64 bg-gradient-to-b from-sky-600 to-indigo-700 text-white shadow-xl"
-      >
-        <div className="p-6">
-          <h1 className="text-2xl font-bold mb-8 text-center text-white">Labour Dashboard</h1>
+    <div className="dashboard-wrapper">
+      <AnimatePresence>
+        {notification.visible && (
+          <motion.div
+            className={`notification ${notification.type}`}
+            initial={{ opacity: 0, y: -50 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -50 }}
+          >
+            {notification.message}
+          </motion.div>
+        )}
+      </AnimatePresence>
 
-          <nav className="space-y-3">
+      <div className="dashboard-container">
+        <motion.div
+          className="sidebar"
+          initial={{ x: -300 }}
+          animate={{ x: 0 }}
+          transition={{ type: "spring", stiffness: 100 }}
+        >
+          <div className="logo-container">
+            <h2 className="dashboard-title">Labour Dashboard</h2>
+          </div>
+
+          <div className="nav-links">
             <motion.button
-              whileHover={{ scale: 1.03 }}
-              whileTap={{ scale: 0.97 }}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className={`sidebar-button ${activeTab === "allStocks" ? "active" : ""}`}
               onClick={() => setActiveTab("allStocks")}
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ${
-                activeTab === "allStocks"
-                  ? "bg-white text-indigo-700 font-medium shadow-md"
-                  : "text-white hover:bg-white/10"
-              }`}
             >
-              <Package size={20} />
-              <span>Items Inventory</span>
+              <Package2 size={20} />
+              <span>Items</span>
             </motion.button>
 
             <motion.button
-              whileHover={{ scale: 1.03 }}
-              whileTap={{ scale: 0.97 }}
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className={`sidebar-button ${activeTab === "AddStock" ? "active" : ""}`}
               onClick={() => setActiveTab("AddStock")}
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 ${
-                activeTab === "AddStock"
-                  ? "bg-white text-indigo-700 font-medium shadow-md"
-                  : "text-white hover:bg-white/10"
-              }`}
             >
               <ShoppingCart size={20} />
-              <span>Request Items</span>
+              <span>Requests</span>
             </motion.button>
+          </div>
 
+          <div className="sidebar-footer">
             <motion.button
-              whileHover={{ scale: 1.03 }}
-              whileTap={{ scale: 0.97 }}
-              onClick={() => {
-                localStorage.removeItem("token")
-                setIsAuthenticated(false)
-                navigate("/login")
-              }}
-              className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-white hover:bg-white/10 transition-all duration-200 mt-auto"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="logout-button"
+              onClick={handleLogout}
             >
               <LogOut size={20} />
               <span>Logout</span>
             </motion.button>
-          </nav>
-        </div>
-      </motion.div>
+          </div>
+        </motion.div>
 
-      {/* Main Content */}
-      <div className="flex-1 overflow-hidden">
-        <AnimatePresence mode="wait">
-          {activeTab === "allStocks" && (
-            <motion.div
-              key="allStocks"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.3 }}
-              className="h-full overflow-auto p-6"
-            >
-              <div className="bg-white rounded-xl shadow-md p-6 mb-6">
-                <div className="flex justify-between items-center mb-6">
-                  <h2 className="text-2xl font-bold text-gray-800">Items Inventory</h2>
-
-                  <div className="relative">
-                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
+        <motion.div
+          className="main-content"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.2 }}
+        >
+          <AnimatePresence mode="wait">
+            {loading ? (
+              <motion.div
+                key="loading"
+                className="loading-container"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+              >
+                <Loader2 className="loading-spinner" size={40} />
+                <p>Loading data...</p>
+              </motion.div>
+            ) : activeTab === "allStocks" ? (
+              <motion.div
+                key="allStocks"
+                className="content-section"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.3 }}
+              >
+                <div className="section-header">
+                  <h1>Items Inventory</h1>
+                  <div className="search-container">
+                    <Search className="search-icon" size={18} />
                     <input
                       type="text"
-                      placeholder="Search items..."
+                      placeholder="Search by name, brand, or supplier..."
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value.toLowerCase())}
-                      className="pl-10 pr-4 py-2 rounded-lg border border-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200 w-64"
+                      className="search-input"
                     />
                   </div>
                 </div>
 
-                <div className="overflow-x-auto rounded-lg border border-gray-100">
-                  <table className="min-w-full divide-y divide-gray-200">
-                    <thead className="bg-gray-50">
-                      <tr>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Item Name
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Brand
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Amps
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Watt
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Inch/mm
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Location
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Stock
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Expiry
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Purchase
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Selling
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          GST/Tax
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Manufacturer
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Supplier
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                          Contact
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody className="bg-white divide-y divide-gray-200">
-                      {Array.isArray(medicines) && medicines.length > 0 ? (
-                        medicines
+                <div className="table-container">
+                  {Array.isArray(medicines) && medicines.length > 0 ? (
+                    <table className="data-table">
+                      <thead>
+                        <tr>
+                          <th>Item Name</th>
+                          <th>Brand</th>
+                          <th>Amps</th>
+                          <th>Watt</th>
+                          <th>Inch/mm</th>
+                          <th>Location</th>
+                          <th>Stock</th>
+                          <th>Expiry</th>
+                          <th>Purchase</th>
+                          <th>Selling</th>
+                          <th>GST/Tax</th>
+                          <th>Manufacturer</th>
+                          <th>Supplier</th>
+                          <th>Contact</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {medicines
                           .filter(
                             (med) =>
-                              med.itemName.toLowerCase().includes(searchTerm) ||
-                              med.brand.toLowerCase().includes(searchTerm) ||
-                              med.supplier.toLowerCase().includes(searchTerm),
+                              med.itemName?.toLowerCase().includes(searchTerm) ||
+                              med.brand?.toLowerCase().includes(searchTerm) ||
+                              med.supplier?.toLowerCase().includes(searchTerm),
                           )
                           .map((med, index) => (
                             <motion.tr
-                              key={med._id}
+                              key={med._id || index}
                               initial={{ opacity: 0, y: 10 }}
                               animate={{ opacity: 1, y: 0 }}
-                              transition={{ duration: 0.2, delay: index * 0.05 }}
-                              className="hover:bg-gray-50 transition-colors duration-150"
+                              transition={{ delay: index * 0.05 }}
+                              whileHover={{ backgroundColor: "#f0f7ff" }}
                             >
-                              <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                                {med.itemName}
-                              </td>
-                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{med.brand}</td>
-                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{med.amps}</td>
-                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{med.watt}</td>
-                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{med.inchMm}</td>
-                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                {med.storageLocation}
-                              </td>
-                              <td className="px-6 py-4 whitespace-nowrap">
-                                <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
-                                  {med.stock} units
+                              <td>{med.itemName || "N/A"}</td>
+                              <td>{med.brand || "N/A"}</td>
+                              <td>{med.amps || "N/A"}</td>
+                              <td>{med.watt || "N/A"}</td>
+                              <td>{med.inchMm || "N/A"}</td>
+                              <td>{med.storageLocation || "N/A"}</td>
+                              <td>
+                                <span className={`stock-badge ${Number.parseInt(med.stock) <= 10 ? "low" : "normal"}`}>
+                                  {med.stock || 0} units
                                 </span>
                               </td>
-                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                {new Date(med.expiryDate).toLocaleDateString()}
-                              </td>
-                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                ₹{med.purchasePrice}
-                              </td>
-                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">₹{med.sellingPrice}</td>
-                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{med.gstTax}%</td>
-                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{med.manufacturer}</td>
-                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{med.supplier}</td>
-                              <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                                {med.contact || "N/A"}
-                              </td>
+                              <td>{formatDate(med.expiryDate)}</td>
+                              <td>₹{med.purchasePrice || 0}</td>
+                              <td>₹{med.sellingPrice || 0}</td>
+                              <td>{med.gstTax || 0}%</td>
+                              <td>{med.manufacturer || "N/A"}</td>
+                              <td>{med.supplier || "N/A"}</td>
+                              <td>{med.contact || "N/A"}</td>
                             </motion.tr>
-                          ))
-                      ) : (
-                        <tr>
-                          <td colSpan="14" className="px-6 py-4 text-center text-sm text-gray-500">
-                            No items available
-                          </td>
-                        </tr>
-                      )}
-                    </tbody>
-                  </table>
+                          ))}
+                      </tbody>
+                    </table>
+                  ) : (
+                    <div className="empty-state">
+                      <Package2 size={48} />
+                      <p>No items available in inventory</p>
+                    </div>
+                  )}
                 </div>
-              </div>
-            </motion.div>
-          )}
+              </motion.div>
+            ) : (
+              <motion.div
+                key="AddStock"
+                className="content-section"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.3 }}
+              >
+                <div className="section-header">
+                  <h1>Request New Items</h1>
+                </div>
 
-          {activeTab === "AddStock" && (
-            <motion.div
-              key="AddStock"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.3 }}
-              className="h-full overflow-auto p-6"
-            >
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {/* Request Form */}
-                <motion.div
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.3, delay: 0.1 }}
-                  className="bg-white rounded-xl shadow-md p-6"
-                >
-                  <h2 className="text-2xl font-bold text-gray-800 mb-6 flex items-center">
-                    <Plus className="mr-2 text-indigo-600" size={24} />
-                    Request New Item
-                  </h2>
-
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="space-y-1">
-                      <label className="text-sm font-medium text-gray-700">Item Name *</label>
-                      <div className="relative">
-                        <Box className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
-                        <input
-                          type="text"
-                          placeholder="Item Name"
-                          value={formData.medicineName}
-                          onChange={(e) => setFormData({ ...formData, medicineName: e.target.value })}
-                          className="pl-10 w-full p-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200"
-                        />
-                      </div>
+                <div className="form-container">
+                  <div className="form-grid">
+                    <div className="form-group">
+                      <label>
+                        Item Name <span className="required">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="Enter item name"
+                        value={formData.medicineName}
+                        onChange={(e) => setFormData({ ...formData, medicineName: e.target.value })}
+                      />
                     </div>
 
-                    <div className="space-y-1">
-                      <label className="text-sm font-medium text-gray-700">Brand</label>
-                      <div className="relative">
-                        <Layers
-                          className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
-                          size={16}
-                        />
-                        <input
-                          type="text"
-                          placeholder="Brand"
-                          value={formData.batchNumber}
-                          onChange={(e) => setFormData({ ...formData, batchNumber: e.target.value })}
-                          className="pl-10 w-full p-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200"
-                        />
-                      </div>
+                    <div className="form-group">
+                      <label>Brand</label>
+                      <input
+                        type="text"
+                        placeholder="Enter brand name"
+                        value={formData.batchNumber}
+                        onChange={(e) => setFormData({ ...formData, batchNumber: e.target.value })}
+                      />
                     </div>
 
-                    <div className="space-y-1">
-                      <label className="text-sm font-medium text-gray-700">Amps *</label>
-                      <div className="relative">
-                        <Zap className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
-                        <input
-                          type="text"
-                          placeholder="Amps"
-                          value={formData.category}
-                          onChange={(e) => setFormData({ ...formData, category: e.target.value })}
-                          className="pl-10 w-full p-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200"
-                        />
-                      </div>
+                    <div className="form-group">
+                      <label>
+                        Amps <span className="required">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="Enter amps"
+                        value={formData.category}
+                        onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+                      />
                     </div>
 
-                    <div className="space-y-1">
-                      <label className="text-sm font-medium text-gray-700">Watt *</label>
-                      <div className="relative">
-                        <Zap className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
-                        <input
-                          type="text"
-                          placeholder="Watt"
-                          value={formData.dosage}
-                          onChange={(e) => setFormData({ ...formData, dosage: e.target.value })}
-                          className="pl-10 w-full p-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200"
-                        />
-                      </div>
+                    <div className="form-group">
+                      <label>
+                        Watt <span className="required">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="Enter watt"
+                        value={formData.dosage}
+                        onChange={(e) => setFormData({ ...formData, dosage: e.target.value })}
+                      />
                     </div>
 
-                    <div className="space-y-1">
-                      <label className="text-sm font-medium text-gray-700">Inch/mm</label>
-                      <div className="relative">
-                        <Grid className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
-                        <input
-                          type="text"
-                          placeholder="Inch/mm"
-                          value={formData.composition}
-                          onChange={(e) => setFormData({ ...formData, composition: e.target.value })}
-                          className="pl-10 w-full p-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200"
-                        />
-                      </div>
+                    <div className="form-group">
+                      <label>Inch/mm</label>
+                      <input
+                        type="text"
+                        placeholder="Enter inch/mm"
+                        value={formData.composition}
+                        onChange={(e) => setFormData({ ...formData, composition: e.target.value })}
+                      />
                     </div>
 
-                    <div className="space-y-1">
-                      <label className="text-sm font-medium text-gray-700">Storage Location</label>
-                      <div className="relative">
-                        <MapPin
-                          className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
-                          size={16}
-                        />
-                        <input
-                          type="text"
-                          placeholder="Storage Location"
-                          value={formData.storageLocation}
-                          onChange={(e) => setFormData({ ...formData, storageLocation: e.target.value })}
-                          className="pl-10 w-full p-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200"
-                        />
-                      </div>
+                    <div className="form-group">
+                      <label>Storage Location</label>
+                      <input
+                        type="text"
+                        placeholder="Enter storage location"
+                        value={formData.storageLocation}
+                        onChange={(e) => setFormData({ ...formData, storageLocation: e.target.value })}
+                      />
                     </div>
 
-                    <div className="space-y-1">
-                      <label className="text-sm font-medium text-gray-700">Quantity *</label>
-                      <div className="relative">
-                        <Box className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
+                    <div className="form-group">
+                      <label>
+                        Quantity <span className="required">*</span>
+                      </label>
+                      <input
+                        type="number"
+                        placeholder="Enter quantity"
+                        value={formData.quantity}
+                        onChange={(e) => setFormData({ ...formData, quantity: e.target.value })}
+                      />
+                    </div>
+
+                    <div className="form-group">
+                      <label>Expiry Date</label>
+                      <input
+                        type="date"
+                        value={formData.expiryDate}
+                        onChange={(e) => setFormData({ ...formData, expiryDate: e.target.value })}
+                      />
+                    </div>
+
+                    <div className="form-group">
+                      <label>Purchase Price</label>
+                      <div className="input-with-icon">
+                        <DollarSign size={16} className="input-icon" />
                         <input
                           type="number"
-                          placeholder="Quantity"
-                          value={formData.quantity}
-                          onChange={(e) => setFormData({ ...formData, quantity: e.target.value })}
-                          className="pl-10 w-full p-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="space-y-1">
-                      <label className="text-sm font-medium text-gray-700">Expiry Date</label>
-                      <div className="relative">
-                        <Calendar
-                          className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
-                          size={16}
-                        />
-                        <input
-                          type="date"
-                          value={formData.expiryDate}
-                          onChange={(e) => setFormData({ ...formData, expiryDate: e.target.value })}
-                          className="pl-10 w-full p-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="space-y-1">
-                      <label className="text-sm font-medium text-gray-700">Purchase Price</label>
-                      <div className="relative">
-                        <DollarSign
-                          className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
-                          size={16}
-                        />
-                        <input
-                          type="number"
-                          placeholder="Purchase Price"
+                          placeholder="Enter purchase price"
                           value={formData.purchasePrice}
                           onChange={(e) => setFormData({ ...formData, purchasePrice: e.target.value })}
-                          className="pl-10 w-full p-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200"
                         />
                       </div>
                     </div>
 
-                    <div className="space-y-1">
-                      <label className="text-sm font-medium text-gray-700">Selling Price</label>
-                      <div className="relative">
-                        <DollarSign
-                          className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
-                          size={16}
-                        />
+                    <div className="form-group">
+                      <label>Selling Price</label>
+                      <div className="input-with-icon">
+                        <DollarSign size={16} className="input-icon" />
                         <input
                           type="number"
-                          placeholder="Selling Price"
+                          placeholder="Enter selling price"
                           value={formData.sellingPrice}
                           onChange={(e) => setFormData({ ...formData, sellingPrice: e.target.value })}
-                          className="pl-10 w-full p-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200"
                         />
                       </div>
                     </div>
 
-                    <div className="space-y-1">
-                      <label className="text-sm font-medium text-gray-700">GST/Tax Rate</label>
-                      <div className="relative">
-                        <DollarSign
-                          className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"
-                          size={16}
-                        />
+                    <div className="form-group">
+                      <label>GST/Tax Rate</label>
+                      <div className="input-with-icon">
+                        <Percent size={16} className="input-icon" />
                         <input
                           type="number"
-                          placeholder="GST/Tax Rate"
+                          placeholder="Enter GST/tax rate"
                           value={formData.gstTaxRate}
                           onChange={(e) => setFormData({ ...formData, gstTaxRate: e.target.value })}
-                          className="pl-10 w-full p-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200"
                         />
                       </div>
                     </div>
 
-                    <div className="space-y-1">
-                      <label className="text-sm font-medium text-gray-700">Manufacturer</label>
-                      <div className="relative">
-                        <Truck className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
+                    <div className="form-group">
+                      <label>Manufacturer</label>
+                      <div className="input-with-icon">
+                        <Factory size={16} className="input-icon" />
                         <input
                           type="text"
-                          placeholder="Manufacturer"
+                          placeholder="Enter manufacturer"
                           value={formData.manufacturer}
                           onChange={(e) => setFormData({ ...formData, manufacturer: e.target.value })}
-                          className="pl-10 w-full p-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200"
                         />
                       </div>
                     </div>
 
-                    <div className="space-y-1">
-                      <label className="text-sm font-medium text-gray-700">Supplier Name *</label>
-                      <div className="relative">
-                        <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
+                    <div className="form-group">
+                      <label>
+                        Supplier <span className="required">*</span>
+                      </label>
+                      <div className="input-with-icon">
+                        <Truck size={16} className="input-icon" />
                         <input
                           type="text"
-                          placeholder="Supplier Name"
+                          placeholder="Enter supplier name"
                           value={formData.supplier}
                           onChange={(e) => setFormData({ ...formData, supplier: e.target.value })}
-                          className="pl-10 w-full p-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200"
                         />
                       </div>
                     </div>
 
-                    <div className="space-y-1">
-                      <label className="text-sm font-medium text-gray-700">Supplier Contact *</label>
-                      <div className="relative">
-                        <Phone className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
+                    <div className="form-group">
+                      <label>
+                        Supplier Contact <span className="required">*</span>
+                      </label>
+                      <div className="input-with-icon">
+                        <Phone size={16} className="input-icon" />
                         <input
-                          type="tel"
-                          placeholder="10-digit phone number"
+                          type="text"
+                          placeholder="Enter 10-digit contact number"
                           value={formData.supplierContact}
                           onChange={(e) => setFormData({ ...formData, supplierContact: e.target.value })}
-                          className="pl-10 w-full p-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200"
                         />
                       </div>
                     </div>
 
-                    <div className="space-y-1 md:col-span-2">
-                      <label className="text-sm font-medium text-gray-700">Item Image</label>
-                      <input
-                        type="file"
-                        onChange={handleImageChange}
-                        className="w-full p-2 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all duration-200"
-                      />
+                    <div className="form-group">
+                      <label>Image</label>
+                      <input type="file" onChange={handleImageChange} className="file-input" />
                     </div>
                   </div>
 
                   <motion.button
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
+                    whileHover={{ scale: 1.03 }}
+                    whileTap={{ scale: 0.97 }}
+                    className="submit-button"
                     onClick={requestMedicine}
-                    className="mt-6 w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-3 px-4 rounded-lg transition-all duration-200 flex items-center justify-center"
+                    disabled={submitting}
                   >
-                    <ShoppingCart className="mr-2" size={18} />
-                    Submit Request
+                    {submitting ? (
+                      <>
+                        <Loader2 className="loading-spinner-small" size={20} />
+                        <span>Submitting...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Plus size={20} />
+                        <span>Submit Request</span>
+                      </>
+                    )}
                   </motion.button>
-                </motion.div>
+                </div>
 
-                {/* Request History */}
-                <motion.div
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.3, delay: 0.2 }}
-                  className="bg-white rounded-xl shadow-md p-6"
-                >
-                  <h2 className="text-2xl font-bold text-gray-800 mb-6 flex items-center">
-                    <Clock className="mr-2 text-indigo-600" size={24} />
-                    Request History
-                  </h2>
-
-                  {requests.length > 0 ? (
-                    <div className="overflow-x-auto rounded-lg border border-gray-100">
-                      <table className="min-w-full divide-y divide-gray-200">
-                        <thead className="bg-gray-50">
+                {requests.length > 0 && (
+                  <motion.div
+                    className="requests-section"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.3 }}
+                  >
+                    <h2>Your Request History</h2>
+                    <div className="table-container">
+                      <table className="data-table requests-table">
+                        <thead>
                           <tr>
-                            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                              Date
-                            </th>
-                            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                              Item Name
-                            </th>
-                            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                              Brand
-                            </th>
-                            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                              Amps
-                            </th>
-                            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                              Watt
-                            </th>
-                            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                              Quantity
-                            </th>
-                            <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                              Status
-                            </th>
+                            <th>Date</th>
+                            <th>Item Name</th>
+                            <th>Brand</th>
+                            <th>Amps</th>
+                            <th>Watt</th>
+                            <th>Inch/mm</th>
+                            <th>Quantity</th>
+                            <th>Supplier</th>
+                            <th>Contact</th>
+                            <th>Status</th>
                           </tr>
                         </thead>
-                        <tbody className="bg-white divide-y divide-gray-200">
+                        <tbody>
                           {requests.map((req, index) => (
                             <motion.tr
-                              key={req._id}
+                              key={req._id || index}
                               initial={{ opacity: 0, y: 10 }}
                               animate={{ opacity: 1, y: 0 }}
-                              transition={{ duration: 0.2, delay: index * 0.05 }}
-                              className="hover:bg-gray-50 transition-colors duration-150"
+                              transition={{ delay: index * 0.05 }}
+                              whileHover={{ backgroundColor: "#f0f7ff" }}
                             >
-                              <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
-                                {new Date(req.date).toLocaleDateString()}
-                              </td>
-                              <td className="px-4 py-3 whitespace-nowrap text-sm font-medium text-gray-900">
-                                {req.medicineName}
-                              </td>
-                              <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">{req.batchNumber}</td>
-                              <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">{req.category}</td>
-                              <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">{req.dosage}</td>
-                              <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-500">
-                                {req.quantity} units
-                              </td>
-                              <td className="px-4 py-3 whitespace-nowrap">
-                                <span
-                                  className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                                    req.status === "Approved"
-                                      ? "bg-green-100 text-green-800"
-                                      : req.status === "Rejected"
-                                        ? "bg-red-100 text-red-800"
-                                        : "bg-yellow-100 text-yellow-800"
-                                  }`}
-                                >
-                                  {req.status}
+                              <td>{formatDate(req.date)}</td>
+                              <td>{req.medicineName || req.itemName || "N/A"}</td>
+                              <td>{req.batchNumber || req.brand || "N/A"}</td>
+                              <td>{req.category || req.amps || "N/A"}</td>
+                              <td>{req.dosage || req.watt || "N/A"}</td>
+                              <td>{req.composition || req.inchMm || "N/A"}</td>
+                              <td>{req.quantity || req.stock || 0} units</td>
+                              <td>{req.supplier || "N/A"}</td>
+                              <td>{req.supplierContact || req.contact || "N/A"}</td>
+                              <td>
+                                <span className={`status-badge ${req.status?.toLowerCase() || "pending"}`}>
+                                  {req.status || "Pending"}
                                 </span>
                               </td>
                             </motion.tr>
@@ -1531,15 +1466,15 @@ export default function PharmacistDashboard() {
                         </tbody>
                       </table>
                     </div>
-                  ) : (
-                    <div className="text-center py-8 text-gray-500">No request history available</div>
-                  )}
-                </motion.div>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+                  </motion.div>
+                )}
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </motion.div>
       </div>
     </div>
   )
 }
+
+export default PharmacistDashboard

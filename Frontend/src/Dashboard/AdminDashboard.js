@@ -897,67 +897,1212 @@
 
 
 
-import React, { useEffect, useState } from "react";
-import axios from "axios";
-import { Users, Receipt, PlusSquare, BarChart2, ClipboardCheck, Search, Trash2, CheckCircle, XCircle, LogOut, DollarSign, CreditCard, Package, X } from 'lucide-react';
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
-import { motion, AnimatePresence } from "framer-motion";
-import "./AdminDashboard.css";
+// import React, { useEffect, useState } from "react";
+// import axios from "axios";
+// import { Users, Receipt, PlusSquare, BarChart2, ClipboardCheck, Search, Trash2, CheckCircle, XCircle, LogOut, DollarSign, CreditCard, Package, X } from 'lucide-react';
+// import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
+// import { motion, AnimatePresence } from "framer-motion";
+// import "./AdminDashboard.css";
+
+// // Axios instance with default headers
+// const api = axios.create({
+//   baseURL: "https://easebilling.onrender.com/api",
+// });
+
+// // Add request interceptor to include token
+// api.interceptors.request.use(
+//   (config) => {
+//     const token = localStorage.getItem("token");
+//     if (token) {
+//       config.headers.Authorization = `Bearer ${token}`;
+//     }
+//     return config;
+//   },
+//   (error) => Promise.reject(error)
+// );
+
+// // Add response interceptor for 401/403 errors
+// api.interceptors.response.use(
+//   (response) => response,
+//   (error) => {
+//     if (error.response && (error.response.status === 401 || error.response.status === 403)) {
+//       localStorage.removeItem("token");
+//       window.location.reload();
+//     }
+//     return Promise.reject(error);
+//   }
+// );
+
+// const AdminDashboard = () => {
+//   const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem("token"));
+//   const navigate = (path) => {
+//     window.location.href = path;
+//   };
+  
+//   const [loginForm, setLoginForm] = useState({ email: "", password: "" });
+//   const [loginError, setLoginError] = useState("");
+//   const [activeTab, setActiveTab] = useState("allStocks");
+//   const [stocks, setStocks] = useState([]);
+//   const [workers, setWorkers] = useState([]);
+//   const [invoices, setInvoices] = useState([]);
+//   const [requests, setRequests] = useState([]);
+//   const [totalSales, setTotalSales] = useState(0);
+//   const [dailySales, setDailySales] = useState([]);
+//   const [totalGST, setTotalGST] = useState(0);
+//   const [searchTerm, setSearchTerm] = useState("");
+//   const [selectedTransaction, setSelectedTransaction] = useState(null);
+//   const [transactionSearch, setTransactionSearch] = useState("");
+//   const [newWorker, setNewWorker] = useState({
+//     name: "",
+//     email: "",
+//     password: "",
+//     role: "Cashier",
+//   });
+//   const [formData, setFormData] = useState({
+//     itemName: "",
+//     brand: "",
+//     amps: "",
+//     watt: "",
+//     inchMm: "",
+//     storageLocation: "",
+//     stock: "",
+//     expiryDate: "",
+//     purchasePrice: "",
+//     sellingPrice: "",
+//     gstTax: "",
+//     manufacturer: "",
+//     supplier: "",
+//     contact: "",
+//     image: null,
+//   });
+
+//   const handleLogin = async (e) => {
+//     e.preventDefault();
+//     try {
+//       const response = await api.post("/api/login", loginForm);
+//       localStorage.setItem("token", response.data.token);
+//       setIsAuthenticated(true);
+//       setLoginError("");
+//       setLoginForm({ email: "", password: "" });
+//     } catch (error) {
+//       const errorMsg = error.response?.data?.error || "Login failed. Please check your credentials or server status.";
+//       setLoginError(errorMsg);
+//     }
+//   };
+
+//   useEffect(() => {
+//     if (isAuthenticated) {
+//       const processSalesData = () => {
+//         const salesMap = new Map();
+//         invoices.forEach((invoice) => {
+//           const date = new Date(invoice.date);
+//           const day = date.getDate();
+//           const formattedDate = `${day}`;
+//           if (!salesMap.has(formattedDate)) {
+//             salesMap.set(formattedDate, { date: formattedDate, totalSales: 0 });
+//           }
+//           salesMap.get(formattedDate).totalSales += invoice.totalBill || 0;
+//         });
+//         const sortedData = Array.from(salesMap.values()).sort((a, b) => a.date - b.date);
+//         setDailySales(sortedData);
+//       };
+//       processSalesData();
+//     }
+//   }, [invoices, isAuthenticated]);
+
+//   useEffect(() => {
+//     if (isAuthenticated) {
+//       fetchStocks();
+//       fetchWorkers();
+//       fetchInvoices();
+//       fetchRequests();
+//     }
+//   }, [isAuthenticated]);
+
+//   const fetchStocks = async () => {
+//     try {
+//       const response = await api.get("/medicines");
+//       setStocks(response.data);
+//     } catch (error) {
+//       console.error("Error fetching stocks:", error.response?.data || error);
+//     }
+//   };
+
+//   const fetchWorkers = async () => {
+//     try {
+//       const response = await api.get("/workers");
+//       setWorkers(response.data);
+//     } catch (error) {
+//       console.error("Error fetching workers:", error);
+//     }
+//   };
+
+//   const fetchInvoices = async () => {
+//     try {
+//       const response = await api.get("/invoices");
+//       setInvoices(response.data);
+//       setTotalSales(response.data.reduce((sum, inv) => sum + (inv.totalBill || 0), 0));
+//       setTotalGST(response.data.reduce((sum, inv) => sum + (inv.totalGST || 0), 0));
+//     } catch (error) {
+//       console.error("Error fetching invoices:", error);
+//     }
+//   };
+
+//   const fetchRequests = async () => {
+//     try {
+//       const response = await api.get("/medicine-requests");
+//       setRequests(response.data);
+//     } catch (error) {
+//       console.error("Error fetching requests:", error.response?.data || error);
+//     }
+//   };
+
+//   const handleImageChange = (e) => {
+//     setFormData({ ...formData, image: e.target.files[0] });
+//   };
+
+//   const addMedicine = async () => {
+//     if (!formData.itemName || !formData.stock || parseInt(formData.stock) <= 0) {
+//       alert("Please fill in Item Name and a valid Stock Quantity");
+//       return;
+//     }
+//     try {
+//       const formDataToSend = new FormData();
+//       formDataToSend.append("name", formData.itemName);
+//       formDataToSend.append("batchNumber", formData.brand);
+//       formDataToSend.append("category", formData.amps);
+//       formDataToSend.append("strengthDosage", formData.watt);
+//       formDataToSend.append("composition", formData.inchMm);
+//       formDataToSend.append("storageLocation", formData.storageLocation);
+//       formDataToSend.append("stockQuantity", parseInt(formData.stock));
+//       formDataToSend.append("expiryDate", formData.expiryDate);
+//       formDataToSend.append("purchasePrice", parseFloat(formData.purchasePrice) || 0);
+//       formDataToSend.append("sellingPrice", parseFloat(formData.sellingPrice) || 0);
+//       formDataToSend.append("gstTaxRate", parseFloat(formData.gstTax) || 0);
+//       formDataToSend.append("manufacturer", formData.manufacturer);
+//       formDataToSend.append("supplierName", formData.supplier);
+//       formDataToSend.append("supplierContact", formData.contact);
+//       if (formData.image) {
+//         formDataToSend.append("image", formData.image);
+//       }
+
+//       await api.post("/add-item", formDataToSend, {
+//         headers: { "Content-Type": "multipart/form-data" },
+//       });
+
+//       alert("Item added successfully");
+//       fetchStocks();
+//       setFormData({
+//         itemName: "",
+//         brand: "",
+//         amps: "",
+//         watt: "",
+//         inchMm: "",
+//         storageLocation: "",
+//         stock: "",
+//         expiryDate: "",
+//         purchasePrice: "",
+//         sellingPrice: "",
+//         gstTax: "",
+//         manufacturer: "",
+//         supplier: "",
+//         contact: "",
+//         image: null,
+//       });
+//     } catch (error) {
+//       console.error("Error adding item:", error.response?.data || error);
+//       alert(`Failed to add item: ${error.response?.data?.error || "Unknown error"}`);
+//     }
+//   };
+
+//   const deleteMedicine = async (id, name) => {
+//     if (!window.confirm(`Are you sure you want to delete "${name}"? This action cannot be undone.`)) {
+//       return;
+//     }
+
+//     try {
+//       const response = await api.delete(`/delete-medicine/${id}`);
+//       if (response.status === 200) {
+//         alert(`Medicine "${name}" deleted successfully`);
+//         fetchStocks();
+//       }
+//     } catch (error) {
+//       console.error("Error deleting medicine:", error.response?.data || error);
+//       alert(`Failed to delete medicine: ${error.response?.data?.error || "Unknown error"}`);
+//     }
+//   };
+
+//   const handleApproveRequest = async (id) => {
+//     try {
+//       await api.put(`/approve-request/${id}`);
+//       alert("Request approved successfully");
+//       fetchRequests();
+//       fetchStocks();
+//     } catch (error) {
+//       console.error("Error approving request:", error.response?.data || error);
+//       alert(`Failed to approve request: ${error.response?.data?.error || "Unknown error"}`);
+//     }
+//   };
+
+//   const handleRejectRequest = async (id) => {
+//     try {
+//       await api.put(`/reject-request/${id}`);
+//       alert("Request rejected successfully");
+//       fetchRequests();
+//     } catch (error) {
+//       console.error("Error rejecting request:", error.response?.data || error);
+//       alert(`Failed to reject request: ${error.response?.data?.error || "Unknown error"}`);
+//     }
+//   };
+
+//   const addWorker = async () => {
+//     try {
+//       await api.post("/worker", newWorker);
+//       alert("Worker added successfully");
+//       fetchWorkers();
+//       setNewWorker({ name: "", email: "", password: "", role: "Cashier" });
+//     } catch (error) {
+//       console.error("Error adding worker:", error.response?.data || error);
+//       alert(`Failed to add worker: ${error.response?.data?.error || "Unknown error"}`);
+//     }
+//   };
+
+//   const updateWorkerPassword = async (id, newPassword) => {
+//     try {
+//       await api.put(`/update-worker/${id}`, { newPassword });
+//       alert("Password updated successfully");
+//     } catch (error) {
+//       console.error("Error updating password:", error.response?.data || error);
+//       alert(`Failed to update password: ${error.response?.data?.error || "Unknown error"}`);
+//     }
+//   };
+
+//   const deleteWorker = async (id) => {
+//     try {
+//       await api.delete(`/delete-worker/${id}`);
+//       alert("Worker deleted successfully");
+//       fetchWorkers();
+//     } catch (error) {
+//       console.error("Error deleting worker:", error.response?.data || error);
+//       alert(`Failed to delete worker: ${error.response?.data?.error || "Unknown error"}`);
+//     }
+//   };
+
+//   // Component for sidebar buttons
+//   const SidebarButton = ({ icon, label, active, onClick }) => (
+//     <motion.button
+//       whileHover={{ x: 4 }}
+//       whileTap={{ scale: 0.95 }}
+//       onClick={onClick}
+//       className={`sidebar-button ${active ? "active" : ""}`}
+//     >
+//       <span className="sidebar-icon">{icon}</span>
+//       {label}
+//     </motion.button>
+//   );
+
+//   // Component for page headers
+//   const PageHeader = ({ title, icon }) => (
+//     <div className="page-header">
+//       <div className="page-header-icon">{icon}</div>
+//       <h1 className="page-title">{title}</h1>
+//     </div>
+//   );
+
+//   // Component for form inputs
+//   const FormInput = ({ type = "text", placeholder, value, onChange }) => (
+//     <input
+//       type={type}
+//       placeholder={placeholder}
+//       value={value}
+//       onChange={onChange}
+//       className="form-input"
+//     />
+//   );
+
+//   // Component for table headers
+//   const TableHeader = ({ children }) => (
+//     <th className="table-header">{children}</th>
+//   );
+
+//   // Component for table cells
+//   const TableCell = ({ children }) => (
+//     <td className="table-cell">{children}</td>
+//   );
+
+//   // Component for tab content with animation
+//   const TabContent = ({ children }) => (
+//     <motion.div
+//       initial={{ opacity: 0, y: 20 }}
+//       animate={{ opacity: 1, y: 0 }}
+//       exit={{ opacity: 0, y: -20 }}
+//       transition={{ duration: 0.3 }}
+//       className="tab-content"
+//     >
+//       {children}
+//     </motion.div>
+//   );
+
+//   // Component for status badges
+//   const StatusBadge = ({ status }) => {
+//     let className = "status-badge";
+
+//     switch (status) {
+//       case "Approved":
+//         className += " approved";
+//         break;
+//       case "Rejected":
+//         className += " rejected";
+//         break;
+//       default:
+//         className += " pending";
+//     }
+
+//     return <span className={className}>{status}</span>;
+//   };
+
+//   // Component for stat cards
+//   const StatCard = ({ title, value, icon, color }) => {
+//     const className = `stat-card ${color}`;
+
+//     return (
+//       <motion.div whileHover={{ y: -5 }} className={className}>
+//         <div className="stat-card-content">
+//           <div className={`stat-card-icon ${color}`}>{icon}</div>
+//           <div className="stat-card-text">
+//             <h3 className="stat-card-title">{title}</h3>
+//             <p className="stat-card-value">{value}</p>
+//           </div>
+//         </div>
+//       </motion.div>
+//     );
+//   };
+
+//   if (!isAuthenticated) {
+//     return (
+//       <div className="login-container">
+//         <motion.div
+//           initial={{ opacity: 0, y: 20 }}
+//           animate={{ opacity: 1, y: 0 }}
+//           transition={{ duration: 0.5 }}
+//           className="login-card"
+//         >
+//           <h2 className="login-title">Admin Login</h2>
+//           <form onSubmit={handleLogin} className="login-form">
+//             <div className="form-group">
+//               <label className="form-label">Email</label>
+//               <input
+//                 type="email"
+//                 value={loginForm.email}
+//                 onChange={(e) => setLoginForm({ ...loginForm, email: e.target.value })}
+//                 className="form-input"
+//                 required
+//               />
+//             </div>
+//             <div className="form-group">
+//               <label className="form-label">Password</label>
+//               <input
+//                 type="password"
+//                 value={loginForm.password}
+//                 onChange={(e) => setLoginForm({ ...loginForm, password: e.target.value })}
+//                 className="form-input"
+//                 required
+//               />
+//             </div>
+//             {loginError && (
+//               <motion.div
+//                 initial={{ opacity: 0 }}
+//                 animate={{ opacity: 1 }}
+//                 className="login-error"
+//               >
+//                 {loginError}
+//               </motion.div>
+//             )}
+//             <motion.button
+//               whileHover={{ scale: 1.02 }}
+//               whileTap={{ scale: 0.98 }}
+//               type="submit"
+//               className="login-button"
+//             >
+//               Login
+//             </motion.button>
+//           </form>
+//         </motion.div>
+//       </div>
+//     );
+//   }
+
+//   return (
+//     <div className="dashboard-container">
+//       {/* Sidebar */}
+//       <motion.div
+//         initial={{ x: -100, opacity: 0 }}
+//         animate={{ x: 0, opacity: 1 }}
+//         transition={{ duration: 0.5 }}
+//         className="sidebar"
+//       >
+//         <div className="sidebar-header">
+//           <h2 className="sidebar-title">Admin Panel</h2>
+//         </div>
+//         <nav className="sidebar-nav">
+//           <SidebarButton
+//             icon={<Package />}
+//             label="Items"
+//             active={activeTab === "allStocks"}
+//             onClick={() => setActiveTab("allStocks")}
+//           />
+//           <SidebarButton
+//             icon={<PlusSquare />}
+//             label="Add Items"
+//             active={activeTab === "AddStock"}
+//             onClick={() => setActiveTab("AddStock")}
+//           />
+//           <SidebarButton
+//             icon={<Users />}
+//             label="Manage Workers"
+//             active={activeTab === "manageWorkers"}
+//             onClick={() => setActiveTab("manageWorkers")}
+//           />
+//           <SidebarButton
+//             icon={<BarChart2 />}
+//             label="Sales Overview"
+//             active={activeTab === "salesOverview"}
+//             onClick={() => setActiveTab("salesOverview")}
+//           />
+//           <SidebarButton
+//             icon={<Receipt />}
+//             label="Transactions"
+//             active={activeTab === "transactions"}
+//             onClick={() => setActiveTab("transactions")}
+//           />
+//           <SidebarButton
+//             icon={<ClipboardCheck />}
+//             label="Stock Requests"
+//             active={activeTab === "stockRequests"}
+//             onClick={() => setActiveTab("stockRequests")}
+//           />
+//           <div className="sidebar-divider"></div>
+//           <SidebarButton
+//             icon={<LogOut />}
+//             label="Logout"
+//             onClick={() => {
+//               localStorage.removeItem("token");
+//               setIsAuthenticated(false);
+//               navigate("/login");
+//             }}
+//           />
+//         </nav>
+//       </motion.div>
+
+//       {/* Main Content */}
+//       <div className="main-content">
+//         <AnimatePresence mode="wait">
+//           {activeTab === "allStocks" && (
+//             <TabContent key="allStocks">
+//               <PageHeader title="Items Inventory" icon={<Package />} />
+
+//               <div className="card">
+//                 <div className="search-container">
+//                   <div className="search-icon">
+//                     <Search />
+//                   </div>
+//                   <input
+//                     type="text"
+//                     placeholder="Search by Name, Brand, or Supplier"
+//                     value={searchTerm}
+//                     onChange={(e) => setSearchTerm(e.target.value.toLowerCase())}
+//                     className="search-input"
+//                   />
+//                 </div>
+
+//                 <div className="table-container">
+//                   <table className="data-table">
+//                     <thead>
+//                       <tr>
+//                         <TableHeader>Item Name</TableHeader>
+//                         <TableHeader>Brand</TableHeader>
+//                         <TableHeader>Amps</TableHeader>
+//                         <TableHeader>Watt</TableHeader>
+//                         <TableHeader>inch/mm</TableHeader>
+//                         <TableHeader>Storage Location</TableHeader>
+//                         <TableHeader>Stock</TableHeader>
+//                         <TableHeader>Expiry Date</TableHeader>
+//                         <TableHeader>Purchase Price</TableHeader>
+//                         <TableHeader>Selling Price</TableHeader>
+//                         <TableHeader>GST/Tax</TableHeader>
+//                         <TableHeader>Manufacturer</TableHeader>
+//                         <TableHeader>Supplier</TableHeader>
+//                         <TableHeader>Contact</TableHeader>
+//                         <TableHeader>Action</TableHeader>
+//                       </tr>
+//                     </thead>
+//                     <tbody>
+//                       {stocks
+//                         .filter(
+//                           (item) =>
+//                             (item.itemName?.toLowerCase() || "").includes(searchTerm) ||
+//                             (item.brand?.toLowerCase() || "").includes(searchTerm) ||
+//                             (item.supplier?.toLowerCase() || "").includes(searchTerm)
+//                         )
+//                         .map((item) => (
+//                           <motion.tr
+//                             key={item._id}
+//                             initial={{ opacity: 0 }}
+//                             animate={{ opacity: 1 }}
+//                             exit={{ opacity: 0 }}
+//                             transition={{ duration: 0.2 }}
+//                             className="table-row"
+//                           >
+//                             <TableCell>{item.itemName}</TableCell>
+//                             <TableCell>{item.brand}</TableCell>
+//                             <TableCell>{item.amps}</TableCell>
+//                             <TableCell>{item.watt}</TableCell>
+//                             <TableCell>{item.inchMm}</TableCell>
+//                             <TableCell>{item.storageLocation}</TableCell>
+//                             <TableCell>
+//                               <span
+//                                 className={`stock-badge ${
+//                                   item.stock > 10
+//                                     ? "high"
+//                                     : item.stock > 0
+//                                     ? "medium"
+//                                     : "low"
+//                                 }`}
+//                               >
+//                                 {item.stock} units
+//                               </span>
+//                             </TableCell>
+//                             <TableCell>{new Date(item.expiryDate).toLocaleDateString()}</TableCell>
+//                             <TableCell>₹{item.purchasePrice}</TableCell>
+//                             <TableCell>₹{item.sellingPrice}</TableCell>
+//                             <TableCell>{item.gstTax}%</TableCell>
+//                             <TableCell>{item.manufacturer}</TableCell>
+//                             <TableCell>{item.supplier}</TableCell>
+//                             <TableCell>{item.contact || "N/A"}</TableCell>
+//                             <TableCell>
+//                               <motion.button
+//                                 whileHover={{ scale: 1.1 }}
+//                                 whileTap={{ scale: 0.9 }}
+//                                 className="action-button delete"
+//                                 title="Remove Item"
+//                                 onClick={() => deleteMedicine(item._id, item.itemName)}
+//                               >
+//                                 <Trash2 className="action-icon" />
+//                               </motion.button>
+//                             </TableCell>
+//                           </motion.tr>
+//                         ))}
+//                     </tbody>
+//                   </table>
+//                 </div>
+//               </div>
+//             </TabContent>
+//           )}
+
+//           {activeTab === "AddStock" && (
+//             <TabContent key="AddStock">
+//               <PageHeader title="Add New Item" icon={<PlusSquare />} />
+
+//               <div className="card">
+//                 <div className="form-grid">
+//                   <FormInput
+//                     placeholder="Item Name *"
+//                     value={formData.itemName}
+//                     onChange={(e) => setFormData({ ...formData, itemName: e.target.value })}
+//                   />
+//                   <FormInput
+//                     placeholder="Brand"
+//                     value={formData.brand}
+//                     onChange={(e) => setFormData({ ...formData, brand: e.target.value })}
+//                   />
+//                   <FormInput
+//                     placeholder="Amps *"
+//                     value={formData.amps}
+//                     onChange={(e) => setFormData({ ...formData, amps: e.target.value })}
+//                   />
+//                   <FormInput
+//                     placeholder="Watt *"
+//                     value={formData.watt}
+//                     onChange={(e) => setFormData({ ...formData, watt: e.target.value })}
+//                   />
+//                   <FormInput
+//                     placeholder="inch/mm"
+//                     value={formData.inchMm}
+//                     onChange={(e) => setFormData({ ...formData, inchMm: e.target.value })}
+//                   />
+//                   <FormInput
+//                     placeholder="Storage Location (Rack/Shelf)"
+//                     value={formData.storageLocation}
+//                     onChange={(e) => setFormData({ ...formData, storageLocation: e.target.value })}
+//                   />
+//                   <FormInput
+//                     type="number"
+//                     placeholder="Stock Quantity *"
+//                     value={formData.stock}
+//                     onChange={(e) => setFormData({ ...formData, stock: e.target.value })}
+//                   />
+//                   <FormInput
+//                     type="date"
+//                     placeholder="Expiry Date"
+//                     value={formData.expiryDate}
+//                     onChange={(e) => setFormData({ ...formData, expiryDate: e.target.value })}
+//                   />
+//                   <FormInput
+//                     type="number"
+//                     placeholder="Purchase Price"
+//                     value={formData.purchasePrice}
+//                     onChange={(e) => setFormData({ ...formData, purchasePrice: e.target.value })}
+//                   />
+//                   <FormInput
+//                     type="number"
+//                     placeholder="Selling Price"
+//                     value={formData.sellingPrice}
+//                     onChange={(e) => setFormData({ ...formData, sellingPrice: e.target.value })}
+//                   />
+//                   <FormInput
+//                     type="number"
+//                     placeholder="GST/Tax Rate"
+//                     value={formData.gstTax}
+//                     onChange={(e) => setFormData({ ...formData, gstTax: e.target.value })}
+//                   />
+//                   <FormInput
+//                     placeholder="Manufacturer"
+//                     value={formData.manufacturer}
+//                     onChange={(e) => setFormData({ ...formData, manufacturer: e.target.value })}
+//                   />
+//                   <FormInput
+//                     placeholder="Supplier Name *"
+//                     value={formData.supplier}
+//                     onChange={(e) => setFormData({ ...formData, supplier: e.target.value })}
+//                   />
+//                   <FormInput
+//                     type="tel"
+//                     placeholder="Supplier Contact *"
+//                     value={formData.contact}
+//                     onChange={(e) => setFormData({ ...formData, contact: e.target.value })}
+//                   />
+//                 </div>
+
+//                 <div className="form-actions">
+//                   <motion.button
+//                     whileHover={{ scale: 1.02 }}
+//                     whileTap={{ scale: 0.98 }}
+//                     onClick={addMedicine}
+//                     className="primary-button"
+//                   >
+//                     Add Item
+//                   </motion.button>
+//                 </div>
+//               </div>
+//             </TabContent>
+//           )}
+
+//           {activeTab === "manageWorkers" && (
+//             <TabContent key="manageWorkers">
+//               <PageHeader title="Manage Workers" icon={<Users />} />
+
+//               <div className="card">
+//                 <div className="worker-form">
+//                   <FormInput
+//                     placeholder="Name"
+//                     value={newWorker.name}
+//                     onChange={(e) => setNewWorker({ ...newWorker, name: e.target.value })}
+//                   />
+//                   <FormInput
+//                     type="email"
+//                     placeholder="Email"
+//                     value={newWorker.email}
+//                     onChange={(e) => setNewWorker({ ...newWorker, email: e.target.value })}
+//                   />
+//                   <FormInput
+//                     type="password"
+//                     placeholder="Password"
+//                     value={newWorker.password}
+//                     onChange={(e) => setNewWorker({ ...newWorker, password: e.target.value })}
+//                   />
+//                   <select
+//                     value={newWorker.role}
+//                     onChange={(e) => setNewWorker({ ...newWorker, role: e.target.value })}
+//                     className="form-select"
+//                   >
+//                     <option value="Cashier">Cashier</option>
+//                     <option value="Labour">Labour</option>
+//                   </select>
+//                 </div>
+
+//                 <motion.button
+//                   whileHover={{ scale: 1.02 }}
+//                   whileTap={{ scale: 0.98 }}
+//                   onClick={addWorker}
+//                   className="primary-button worker-add-button"
+//                 >
+//                   Add Worker
+//                 </motion.button>
+
+//                 <div className="table-container">
+//                   <table className="data-table">
+//                     <thead>
+//                       <tr>
+//                         <TableHeader>Name</TableHeader>
+//                         <TableHeader>Email</TableHeader>
+//                         <TableHeader>Role</TableHeader>
+//                         <TableHeader>Actions</TableHeader>
+//                       </tr>
+//                     </thead>
+//                     <tbody>
+//                       {workers.map((worker) => (
+//                         <motion.tr
+//                           key={worker._id}
+//                           initial={{ opacity: 0 }}
+//                           animate={{ opacity: 1 }}
+//                           exit={{ opacity: 0 }}
+//                           transition={{ duration: 0.2 }}
+//                           className="table-row"
+//                         >
+//                           <TableCell>{worker.name}</TableCell>
+//                           <TableCell>{worker.email}</TableCell>
+//                           <TableCell>
+//                             <span className={`role-badge ${worker.role.toLowerCase()}`}>
+//                               {worker.role}
+//                             </span>
+//                           </TableCell>
+//                           <TableCell>
+//                             <div className="action-buttons">
+//                               <motion.button
+//                                 whileHover={{ scale: 1.05 }}
+//                                 whileTap={{ scale: 0.95 }}
+//                                 className="action-button update"
+//                                 onClick={() => {
+//                                   const newPassword = prompt("Enter new password:");
+//                                   if (newPassword) updateWorkerPassword(worker._id, newPassword);
+//                                 }}
+//                               >
+//                                 Update Password
+//                               </motion.button>
+//                               <motion.button
+//                                 whileHover={{ scale: 1.05 }}
+//                                 whileTap={{ scale: 0.95 }}
+//                                 className="action-button delete"
+//                                 onClick={() => deleteWorker(worker._id)}
+//                               >
+//                                 Delete
+//                               </motion.button>
+//                             </div>
+//                           </TableCell>
+//                         </motion.tr>
+//                       ))}
+//                     </tbody>
+//                   </table>
+//                 </div>
+//               </div>
+//             </TabContent>
+//           )}
+
+//           {activeTab === "salesOverview" && (
+//             <TabContent key="salesOverview">
+//               <PageHeader title="Sales Overview" icon={<BarChart2 />} />
+
+//               <div className="stats-grid">
+//                 <StatCard
+//                   title="Total Sales"
+//                   value={`₹${totalSales.toFixed(2)}`}
+//                   icon={<DollarSign />}
+//                   color="green"
+//                 />
+//                 <StatCard
+//                   title="Total GST Collected"
+//                   value={`₹${totalGST.toFixed(2)}`}
+//                   icon={<CreditCard />}
+//                   color="blue"
+//                 />
+//               </div>
+
+//               <div className="card">
+//                 <h3 className="card-title">Daily Sales</h3>
+//                 <div className="chart-container">
+//                   <ResponsiveContainer width="100%" height={300}>
+//                     <BarChart data={dailySales}>
+//                       <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+//                       <XAxis dataKey="date" stroke="#6b7280" />
+//                       <YAxis stroke="#6b7280" />
+//                       <Tooltip
+//                         contentStyle={{
+//                           backgroundColor: "white",
+//                           border: "none",
+//                           borderRadius: "8px",
+//                           boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)",
+//                         }}
+//                         formatter={(value) => [`₹${value}`, "Sales"]}
+//                         labelFormatter={(label) => `Day ${label}`}
+//                       />
+//                       <Bar dataKey="totalSales" fill="#4ade80" radius={[4, 4, 0, 0]} barSize={30} />
+//                     </BarChart>
+//                   </ResponsiveContainer>
+//                 </div>
+//               </div>
+//             </TabContent>
+//           )}
+
+//           {activeTab === "transactions" && (
+//             <TabContent key="transactions">
+//               <PageHeader title="Transactions" icon={<Receipt />} />
+
+//               <div className="card">
+//                 <div className="search-container">
+//                   <div className="search-icon">
+//                     <Search />
+//                   </div>
+//                   <input
+//                     type="text"
+//                     placeholder="Search by Bill ID or Customer Name"
+//                     value={transactionSearch}
+//                     onChange={(e) => setTransactionSearch(e.target.value.toLowerCase())}
+//                     className="search-input"
+//                   />
+//                 </div>
+
+//                 <div className="table-container">
+//                   <table className="data-table">
+//                     <thead>
+//                       <tr>
+//                         <TableHeader>Bill ID</TableHeader>
+//                         <TableHeader>Customer Name</TableHeader>
+//                         <TableHeader>Phone</TableHeader>
+//                         <TableHeader>Total Bill</TableHeader>
+//                         <TableHeader>Date</TableHeader>
+//                         <TableHeader>Action</TableHeader>
+//                       </tr>
+//                     </thead>
+//                     <tbody>
+//                       {invoices
+//                         .filter(
+//                           (inv) =>
+//                             inv.billId.toLowerCase().includes(transactionSearch) ||
+//                             inv.customerName.toLowerCase().includes(transactionSearch)
+//                         )
+//                         .map((inv) => (
+//                           <motion.tr
+//                             key={inv._id}
+//                             initial={{ opacity: 0 }}
+//                             animate={{ opacity: 1 }}
+//                             exit={{ opacity: 0 }}
+//                             transition={{ duration: 0.2 }}
+//                             className="table-row"
+//                           >
+//                             <TableCell>{inv.billId}</TableCell>
+//                             <TableCell>{inv.customerName}</TableCell>
+//                             <TableCell>{inv.customerPhone}</TableCell>
+//                             <TableCell>
+//                               <span className="price">₹{inv.totalBill}</span>
+//                             </TableCell>
+//                             <TableCell>{new Date(inv.date).toLocaleDateString()}</TableCell>
+//                             <TableCell>
+//                               <motion.button
+//                                 whileHover={{ scale: 1.05 }}
+//                                 whileTap={{ scale: 0.95 }}
+//                                 onClick={() => setSelectedTransaction(inv)}
+//                                 className="action-button view"
+//                               >
+//                                 View
+//                               </motion.button>
+//                             </TableCell>
+//                           </motion.tr>
+//                         ))}
+//                     </tbody>
+//                   </table>
+//                 </div>
+//               </div>
+
+//               {selectedTransaction && (
+//                 <div className="modal-overlay">
+//                   <motion.div
+//                     initial={{ opacity: 0, scale: 0.9 }}
+//                     animate={{ opacity: 1, scale: 1 }}
+//                     exit={{ opacity: 0, scale: 0.9 }}
+//                     className="modal"
+//                   >
+//                     <div className="modal-header">
+//                       <h2 className="modal-title">Transaction Details</h2>
+//                       <motion.button
+//                         whileHover={{ scale: 1.1 }}
+//                         whileTap={{ scale: 0.9 }}
+//                         onClick={() => setSelectedTransaction(null)}
+//                         className="modal-close"
+//                       >
+//                         <X />
+//                       </motion.button>
+//                     </div>
+
+//                     <div className="transaction-details">
+//                       <div className="detail-grid">
+//                         <div className="detail-item">
+//                           <p className="detail-label">Bill ID</p>
+//                           <p className="detail-value">{selectedTransaction.billId}</p>
+//                         </div>
+//                         <div className="detail-item">
+//                           <p className="detail-label">Date</p>
+//                           <p className="detail-value">{new Date(selectedTransaction.date).toLocaleString()}</p>
+//                         </div>
+//                         <div className="detail-item">
+//                           <p className="detail-label">Customer Name</p>
+//                           <p className="detail-value">{selectedTransaction.customerName}</p>
+//                         </div>
+//                         <div className="detail-item">
+//                           <p className="detail-label">Phone</p>
+//                           <p className="detail-value">{selectedTransaction.customerPhone}</p>
+//                         </div>
+//                         <div className="detail-item">
+//                           <p className="detail-label">Payment Method</p>
+//                           <p className="detail-value capitalize">{selectedTransaction.paymentMethod}</p>
+//                         </div>
+//                       </div>
+
+//                       <h3 className="section-title">Items Purchased</h3>
+//                       <div className="table-container">
+//                         <table className="data-table">
+//                           <thead>
+//                             <tr>
+//                               <th className="table-header">Item Name</th>
+//                               <th className="table-header">Quantity</th>
+//                               <th className="table-header">Price</th>
+//                               <th className="table-header">GST</th>
+//                               <th className="table-header">Total</th>
+//                             </tr>
+//                           </thead>
+//                           <tbody>
+//                             {selectedTransaction.items &&
+//                               selectedTransaction.items.map((item, index) => (
+//                                 <tr key={index} className="table-row">
+//                                   <td className="table-cell">{item.itemName}</td>
+//                                   <td className="table-cell">{item.quantity}</td>
+//                                   <td className="table-cell">₹{item.sellingPrice}</td>
+//                                   <td className="table-cell">{item.gstTax}%</td>
+//                                   <td className="table-cell">
+//                                     ₹{(item.sellingPrice * item.quantity * (1 + item.gstTax / 100)).toFixed(2)}
+//                                   </td>
+//                                 </tr>
+//                               ))}
+//                           </tbody>
+//                         </table>
+//                       </div>
+
+//                       <div className="bill-summary">
+//                         <div className="summary-row">
+//                           <span className="summary-label">Subtotal:</span>
+//                           <span className="summary-value">₹{selectedTransaction.totalAmount}</span>
+//                         </div>
+//                         <div className="summary-row">
+//                           <span className="summary-label">GST Amount:</span>
+//                           <span className="summary-value">₹{selectedTransaction.totalGST}</span>
+//                         </div>
+//                         <div className="summary-row total">
+//                           <span className="summary-label">Total Bill:</span>
+//                           <span className="summary-value">₹{selectedTransaction.totalBill}</span>
+//                         </div>
+//                       </div>
+
+//                       <div className="modal-actions">
+//                         <motion.button
+//                           whileHover={{ scale: 1.02 }}
+//                           whileTap={{ scale: 0.98 }}
+//                           onClick={() => setSelectedTransaction(null)}
+//                           className="secondary-button"
+//                         >
+//                           Close
+//                         </motion.button>
+//                       </div>
+//                     </div>
+//                   </motion.div>
+//                 </div>
+//               )}
+//             </TabContent>
+//           )}
+
+//           {activeTab === "stockRequests" && (
+//             <TabContent key="stockRequests">
+//               <PageHeader title="Stock Requests" icon={<ClipboardCheck />} />
+
+//               <div className="card">
+//                 <div className="table-container">
+//                   <table className="data-table">
+//                     <thead>
+//                       <tr>
+//                         <TableHeader>Date</TableHeader>
+//                         <TableHeader>Item Name</TableHeader>
+//                         <TableHeader>Brand</TableHeader>
+//                         <TableHeader>Quantity</TableHeader>
+//                         <TableHeader>Supplier Name</TableHeader>
+//                         <TableHeader>Supplier Contact</TableHeader>
+//                         <TableHeader>Status</TableHeader>
+//                         <TableHeader>Actions</TableHeader>
+//                       </tr>
+//                     </thead>
+//                     <tbody>
+//                       {requests.map((req) => (
+//                         <motion.tr
+//                           key={req._id}
+//                           initial={{ opacity: 0 }}
+//                           animate={{ opacity: 1 }}
+//                           exit={{ opacity: 0 }}
+//                           transition={{ duration: 0.2 }}
+//                           className="table-row"
+//                         >
+//                           <TableCell>{new Date(req.date).toLocaleDateString()}</TableCell>
+//                           <TableCell>{req.medicineName}</TableCell>
+//                           <TableCell>{req.batchNumber}</TableCell>
+//                           <TableCell>{req.quantity} units</TableCell>
+//                           <TableCell>{req.supplier}</TableCell>
+//                           <TableCell>{req.supplierContact || "N/A"}</TableCell>
+//                           <TableCell>
+//                             <StatusBadge status={req.status} />
+//                           </TableCell>
+//                           <TableCell>
+//                             {req.status === "Pending" && (
+//                               <div className="action-buttons">
+//                                 <motion.button
+//                                   whileHover={{ scale: 1.1 }}
+//                                   whileTap={{ scale: 0.9 }}
+//                                   onClick={() => handleApproveRequest(req._id)}
+//                                   className="action-button approve"
+//                                 >
+//                                   <CheckCircle className="action-icon" />
+//                                 </motion.button>
+//                                 <motion.button
+//                                   whileHover={{ scale: 1.1 }}
+//                                   whileTap={{ scale: 0.9 }}
+//                                   onClick={() => handleRejectRequest(req._id)}
+//                                   className="action-button reject"
+//                                 >
+//                                   <XCircle className="action-icon" />
+//                                 </motion.button>
+//                               </div>
+//                             )}
+//                           </TableCell>
+//                         </motion.tr>
+//                       ))}
+//                     </tbody>
+//                   </table>
+//                 </div>
+//               </div>
+//             </TabContent>
+//           )}
+//         </AnimatePresence>
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default AdminDashboard;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+"use client"
+
+import { useEffect, useState, useRef } from "react"
+import axios from "axios"
+import { Users, Receipt, PlusSquare, BarChart2, ClipboardCheck, Search, Trash2, CheckCircle, XCircle, LogOut, DollarSign, CreditCard, Package, X, Menu, ChevronRight } from 'lucide-react'
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts"
+import { motion, AnimatePresence } from "framer-motion"
+import "./AdminDashboard.css"
 
 // Axios instance with default headers
 const api = axios.create({
   baseURL: "https://easebilling.onrender.com/api",
-});
+})
 
 // Add request interceptor to include token
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("token")
     if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+      config.headers.Authorization = `Bearer ${token}`
     }
-    return config;
+    return config
   },
-  (error) => Promise.reject(error)
-);
+  (error) => Promise.reject(error),
+)
 
 // Add response interceptor for 401/403 errors
 api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response && (error.response.status === 401 || error.response.status === 403)) {
-      localStorage.removeItem("token");
-      window.location.reload();
+      localStorage.removeItem("token")
+      window.location.reload()
     }
-    return Promise.reject(error);
-  }
-);
+    return Promise.reject(error)
+  },
+)
 
 const AdminDashboard = () => {
-  const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem("token"));
-  const navigate = (path) => {
-    window.location.href = path;
-  };
+  const [isAuthenticated, setIsAuthenticated] = useState(!!localStorage.getItem("token"))
+  const [sidebarOpen, setSidebarOpen] = useState(true)
+  const searchInputRef = useRef(null)
   
-  const [loginForm, setLoginForm] = useState({ email: "", password: "" });
-  const [loginError, setLoginError] = useState("");
-  const [activeTab, setActiveTab] = useState("allStocks");
-  const [stocks, setStocks] = useState([]);
-  const [workers, setWorkers] = useState([]);
-  const [invoices, setInvoices] = useState([]);
-  const [requests, setRequests] = useState([]);
-  const [totalSales, setTotalSales] = useState(0);
-  const [dailySales, setDailySales] = useState([]);
-  const [totalGST, setTotalGST] = useState(0);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [selectedTransaction, setSelectedTransaction] = useState(null);
-  const [transactionSearch, setTransactionSearch] = useState("");
+  const navigate = (path) => {
+    window.location.href = path
+  }
+
+  const [loginForm, setLoginForm] = useState({ email: "", password: "" })
+  const [loginError, setLoginError] = useState("")
+  const [activeTab, setActiveTab] = useState("allStocks")
+  const [stocks, setStocks] = useState([])
+  const [workers, setWorkers] = useState([])
+  const [invoices, setInvoices] = useState([])
+  const [requests, setRequests] = useState([])
+  const [totalSales, setTotalSales] = useState(0)
+  const [dailySales, setDailySales] = useState([])
+  const [totalGST, setTotalGST] = useState(0)
+  const [searchTerm, setSearchTerm] = useState("")
+  const [selectedTransaction, setSelectedTransaction] = useState(null)
+  const [transactionSearch, setTransactionSearch] = useState("")
   const [newWorker, setNewWorker] = useState({
     name: "",
     email: "",
     password: "",
     role: "Cashier",
-  });
+  })
   const [formData, setFormData] = useState({
     itemName: "",
     brand: "",
@@ -974,124 +2119,166 @@ const AdminDashboard = () => {
     supplier: "",
     contact: "",
     image: null,
-  });
+  })
+
+  // Toggle sidebar for mobile
+  const toggleSidebar = () => {
+    setSidebarOpen(!sidebarOpen)
+  }
+
+  // Close sidebar when clicking outside on mobile
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      const sidebar = document.querySelector('.sidebar')
+      const menuButton = document.querySelector('.menu-button')
+      
+      if (sidebar && !sidebar.contains(event.target) && 
+          menuButton && !menuButton.contains(event.target) && 
+          window.innerWidth < 1024 && sidebarOpen) {
+        setSidebarOpen(false)
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [sidebarOpen])
+
+  // Close sidebar on window resize if mobile
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 1024) {
+        setSidebarOpen(true)
+      } else {
+        setSidebarOpen(false)
+      }
+    }
+
+    window.addEventListener('resize', handleResize)
+    handleResize() // Set initial state based on screen size
+    
+    return () => {
+      window.removeEventListener('resize', handleResize)
+    }
+  }, [])
 
   const handleLogin = async (e) => {
-    e.preventDefault();
+    e.preventDefault()
     try {
-      const response = await api.post("/api/login", loginForm);
-      localStorage.setItem("token", response.data.token);
-      setIsAuthenticated(true);
-      setLoginError("");
-      setLoginForm({ email: "", password: "" });
+      const response = await api.post("/api/login", loginForm)
+      localStorage.setItem("token", response.data.token)
+      setIsAuthenticated(true)
+      setLoginError("")
+      setLoginForm({ email: "", password: "" })
     } catch (error) {
-      const errorMsg = error.response?.data?.error || "Login failed. Please check your credentials or server status.";
-      setLoginError(errorMsg);
+      const errorMsg = error.response?.data?.error || "Login failed. Please check your credentials or server status."
+      setLoginError(errorMsg)
     }
-  };
+  }
 
   useEffect(() => {
     if (isAuthenticated) {
       const processSalesData = () => {
-        const salesMap = new Map();
+        const salesMap = new Map()
         invoices.forEach((invoice) => {
-          const date = new Date(invoice.date);
-          const day = date.getDate();
-          const formattedDate = `${day}`;
+          const date = new Date(invoice.date)
+          const day = date.getDate()
+          const formattedDate = `${day}`
           if (!salesMap.has(formattedDate)) {
-            salesMap.set(formattedDate, { date: formattedDate, totalSales: 0 });
+            salesMap.set(formattedDate, { date: formattedDate, totalSales: 0 })
           }
-          salesMap.get(formattedDate).totalSales += invoice.totalBill || 0;
-        });
-        const sortedData = Array.from(salesMap.values()).sort((a, b) => a.date - b.date);
-        setDailySales(sortedData);
-      };
-      processSalesData();
+          salesMap.get(formattedDate).totalSales += invoice.totalBill || 0
+        })
+        const sortedData = Array.from(salesMap.values()).sort((a, b) => a.date - b.date)
+        setDailySales(sortedData)
+      }
+      processSalesData()
     }
-  }, [invoices, isAuthenticated]);
+  }, [invoices, isAuthenticated])
 
   useEffect(() => {
     if (isAuthenticated) {
-      fetchStocks();
-      fetchWorkers();
-      fetchInvoices();
-      fetchRequests();
+      fetchStocks()
+      fetchWorkers()
+      fetchInvoices()
+      fetchRequests()
     }
-  }, [isAuthenticated]);
+  }, [isAuthenticated])
 
   const fetchStocks = async () => {
     try {
-      const response = await api.get("/medicines");
-      setStocks(response.data);
+      const response = await api.get("/medicines")
+      setStocks(response.data)
     } catch (error) {
-      console.error("Error fetching stocks:", error.response?.data || error);
+      console.error("Error fetching stocks:", error.response?.data || error)
     }
-  };
+  }
 
   const fetchWorkers = async () => {
     try {
-      const response = await api.get("/workers");
-      setWorkers(response.data);
+      const response = await api.get("/workers")
+      setWorkers(response.data)
     } catch (error) {
-      console.error("Error fetching workers:", error);
+      console.error("Error fetching workers:", error)
     }
-  };
+  }
 
   const fetchInvoices = async () => {
     try {
-      const response = await api.get("/invoices");
-      setInvoices(response.data);
-      setTotalSales(response.data.reduce((sum, inv) => sum + (inv.totalBill || 0), 0));
-      setTotalGST(response.data.reduce((sum, inv) => sum + (inv.totalGST || 0), 0));
+      const response = await api.get("/invoices")
+      setInvoices(response.data)
+      setTotalSales(response.data.reduce((sum, inv) => sum + (inv.totalBill || 0), 0))
+      setTotalGST(response.data.reduce((sum, inv) => sum + (inv.totalGST || 0), 0))
     } catch (error) {
-      console.error("Error fetching invoices:", error);
+      console.error("Error fetching invoices:", error)
     }
-  };
+  }
 
   const fetchRequests = async () => {
     try {
-      const response = await api.get("/medicine-requests");
-      setRequests(response.data);
+      const response = await api.get("/medicine-requests")
+      setRequests(response.data)
     } catch (error) {
-      console.error("Error fetching requests:", error.response?.data || error);
+      console.error("Error fetching requests:", error.response?.data || error)
     }
-  };
+  }
 
   const handleImageChange = (e) => {
-    setFormData({ ...formData, image: e.target.files[0] });
-  };
+    setFormData({ ...formData, image: e.target.files[0] })
+  }
 
   const addMedicine = async () => {
-    if (!formData.itemName || !formData.stock || parseInt(formData.stock) <= 0) {
-      alert("Please fill in Item Name and a valid Stock Quantity");
-      return;
+    if (!formData.itemName || !formData.stock || Number.parseInt(formData.stock) <= 0) {
+      alert("Please fill in Item Name and a valid Stock Quantity")
+      return
     }
     try {
-      const formDataToSend = new FormData();
-      formDataToSend.append("name", formData.itemName);
-      formDataToSend.append("batchNumber", formData.brand);
-      formDataToSend.append("category", formData.amps);
-      formDataToSend.append("strengthDosage", formData.watt);
-      formDataToSend.append("composition", formData.inchMm);
-      formDataToSend.append("storageLocation", formData.storageLocation);
-      formDataToSend.append("stockQuantity", parseInt(formData.stock));
-      formDataToSend.append("expiryDate", formData.expiryDate);
-      formDataToSend.append("purchasePrice", parseFloat(formData.purchasePrice) || 0);
-      formDataToSend.append("sellingPrice", parseFloat(formData.sellingPrice) || 0);
-      formDataToSend.append("gstTaxRate", parseFloat(formData.gstTax) || 0);
-      formDataToSend.append("manufacturer", formData.manufacturer);
-      formDataToSend.append("supplierName", formData.supplier);
-      formDataToSend.append("supplierContact", formData.contact);
+      const formDataToSend = new FormData()
+      formDataToSend.append("name", formData.itemName)
+      formDataToSend.append("batchNumber", formData.brand)
+      formDataToSend.append("category", formData.amps)
+      formDataToSend.append("strengthDosage", formData.watt)
+      formDataToSend.append("composition", formData.inchMm)
+      formDataToSend.append("storageLocation", formData.storageLocation)
+      formDataToSend.append("stockQuantity", Number.parseInt(formData.stock))
+      formDataToSend.append("expiryDate", formData.expiryDate)
+      formDataToSend.append("purchasePrice", Number.parseFloat(formData.purchasePrice) || 0)
+      formDataToSend.append("sellingPrice", Number.parseFloat(formData.sellingPrice) || 0)
+      formDataToSend.append("gstTaxRate", Number.parseFloat(formData.gstTax) || 0)
+      formDataToSend.append("manufacturer", formData.manufacturer)
+      formDataToSend.append("supplierName", formData.supplier)
+      formDataToSend.append("supplierContact", formData.contact)
       if (formData.image) {
-        formDataToSend.append("image", formData.image);
+        formDataToSend.append("image", formData.image)
       }
 
       await api.post("/add-item", formDataToSend, {
         headers: { "Content-Type": "multipart/form-data" },
-      });
+      })
 
-      alert("Item added successfully");
-      fetchStocks();
+      alert("Item added successfully")
+      fetchStocks()
       setFormData({
         itemName: "",
         brand: "",
@@ -1108,127 +2295,128 @@ const AdminDashboard = () => {
         supplier: "",
         contact: "",
         image: null,
-      });
+      })
     } catch (error) {
-      console.error("Error adding item:", error.response?.data || error);
-      alert(`Failed to add item: ${error.response?.data?.error || "Unknown error"}`);
+      console.error("Error adding item:", error.response?.data || error)
+      alert(`Failed to add item: ${error.response?.data?.error || "Unknown error"}`)
     }
-  };
+  }
 
   const deleteMedicine = async (id, name) => {
     if (!window.confirm(`Are you sure you want to delete "${name}"? This action cannot be undone.`)) {
-      return;
+      return
     }
 
     try {
-      const response = await api.delete(`/delete-medicine/${id}`);
+      const response = await api.delete(`/delete-medicine/${id}`)
       if (response.status === 200) {
-        alert(`Medicine "${name}" deleted successfully`);
-        fetchStocks();
+        alert(`Medicine "${name}" deleted successfully`)
+        fetchStocks()
       }
     } catch (error) {
-      console.error("Error deleting medicine:", error.response?.data || error);
-      alert(`Failed to delete medicine: ${error.response?.data?.error || "Unknown error"}`);
+      console.error("Error deleting medicine:", error.response?.data || error)
+      alert(`Failed to delete medicine: ${error.response?.data?.error || "Unknown error"}`)
     }
-  };
+  }
 
   const handleApproveRequest = async (id) => {
     try {
-      await api.put(`/approve-request/${id}`);
-      alert("Request approved successfully");
-      fetchRequests();
-      fetchStocks();
+      await api.put(`/approve-request/${id}`)
+      alert("Request approved successfully")
+      fetchRequests()
+      fetchStocks()
     } catch (error) {
-      console.error("Error approving request:", error.response?.data || error);
-      alert(`Failed to approve request: ${error.response?.data?.error || "Unknown error"}`);
+      console.error("Error approving request:", error.response?.data || error)
+      alert(`Failed to approve request: ${error.response?.data?.error || "Unknown error"}`)
     }
-  };
+  }
 
   const handleRejectRequest = async (id) => {
     try {
-      await api.put(`/reject-request/${id}`);
-      alert("Request rejected successfully");
-      fetchRequests();
+      await api.put(`/reject-request/${id}`)
+      alert("Request rejected successfully")
+      fetchRequests()
     } catch (error) {
-      console.error("Error rejecting request:", error.response?.data || error);
-      alert(`Failed to reject request: ${error.response?.data?.error || "Unknown error"}`);
+      console.error("Error rejecting request:", error.response?.data || error)
+      alert(`Failed to reject request: ${error.response?.data?.error || "Unknown error"}`)
     }
-  };
+  }
 
   const addWorker = async () => {
     try {
-      await api.post("/worker", newWorker);
-      alert("Worker added successfully");
-      fetchWorkers();
-      setNewWorker({ name: "", email: "", password: "", role: "Cashier" });
+      await api.post("/worker", newWorker)
+      alert("Worker added successfully")
+      fetchWorkers()
+      setNewWorker({ name: "", email: "", password: "", role: "Cashier" })
     } catch (error) {
-      console.error("Error adding worker:", error.response?.data || error);
-      alert(`Failed to add worker: ${error.response?.data?.error || "Unknown error"}`);
+      console.error("Error adding worker:", error.response?.data || error)
+      alert(`Failed to add worker: ${error.response?.data?.error || "Unknown error"}`)
     }
-  };
+  }
 
   const updateWorkerPassword = async (id, newPassword) => {
     try {
-      await api.put(`/update-worker/${id}`, { newPassword });
-      alert("Password updated successfully");
+      await api.put(`/update-worker/${id}`, { newPassword })
+      alert("Password updated successfully")
     } catch (error) {
-      console.error("Error updating password:", error.response?.data || error);
-      alert(`Failed to update password: ${error.response?.data?.error || "Unknown error"}`);
+      console.error("Error updating password:", error.response?.data || error)
+      alert(`Failed to update password: ${error.response?.data?.error || "Unknown error"}`)
     }
-  };
+  }
 
   const deleteWorker = async (id) => {
     try {
-      await api.delete(`/delete-worker/${id}`);
-      alert("Worker deleted successfully");
-      fetchWorkers();
+      await api.delete(`/delete-worker/${id}`)
+      alert("Worker deleted successfully")
+      fetchWorkers()
     } catch (error) {
-      console.error("Error deleting worker:", error.response?.data || error);
-      alert(`Failed to delete worker: ${error.response?.data?.error || "Unknown error"}`);
+      console.error("Error deleting worker:", error.response?.data || error)
+      alert(`Failed to delete worker: ${error.response?.data?.error || "Unknown error"}`)
     }
-  };
+  }
 
   // Component for sidebar buttons
   const SidebarButton = ({ icon, label, active, onClick }) => (
     <motion.button
       whileHover={{ x: 4 }}
       whileTap={{ scale: 0.95 }}
-      onClick={onClick}
+      onClick={() => {
+        onClick()
+        if (window.innerWidth < 1024) {
+          setSidebarOpen(false)
+        }
+      }}
       className={`sidebar-button ${active ? "active" : ""}`}
     >
       <span className="sidebar-icon">{icon}</span>
-      {label}
+      <span className="sidebar-label">{label}</span>
+      {active && <ChevronRight className="sidebar-arrow" />}
     </motion.button>
-  );
+  )
 
   // Component for page headers
   const PageHeader = ({ title, icon }) => (
     <div className="page-header">
-      <div className="page-header-icon">{icon}</div>
-      <h1 className="page-title">{title}</h1>
+      <button className="menu-button" onClick={toggleSidebar}>
+        <Menu />
+      </button>
+      <div className="page-header-content">
+        <div className="page-header-icon">{icon}</div>
+        <h1 className="page-title">{title}</h1>
+      </div>
     </div>
-  );
+  )
 
   // Component for form inputs
   const FormInput = ({ type = "text", placeholder, value, onChange }) => (
-    <input
-      type={type}
-      placeholder={placeholder}
-      value={value}
-      onChange={onChange}
-      className="form-input"
-    />
-  );
+    <input type={type} placeholder={placeholder} value={value} onChange={onChange} className="form-input" />
+  )
 
   // Component for table headers
-  const TableHeader = ({ children }) => (
-    <th className="table-header">{children}</th>
-  );
+  const TableHeader = ({ children }) => <th className="table-header">{children}</th>
 
   // Component for table cells
-  const TableCell = ({ children }) => (
-    <td className="table-cell">{children}</td>
-  );
+  const TableCell = ({ children }) => <td className="table-cell">{children}</td>
 
   // Component for tab content with animation
   const TabContent = ({ children }) => (
@@ -1241,29 +2429,29 @@ const AdminDashboard = () => {
     >
       {children}
     </motion.div>
-  );
+  )
 
   // Component for status badges
   const StatusBadge = ({ status }) => {
-    let className = "status-badge";
+    let className = "status-badge"
 
     switch (status) {
       case "Approved":
-        className += " approved";
-        break;
+        className += " approved"
+        break
       case "Rejected":
-        className += " rejected";
-        break;
+        className += " rejected"
+        break
       default:
-        className += " pending";
+        className += " pending"
     }
 
-    return <span className={className}>{status}</span>;
-  };
+    return <span className={className}>{status}</span>
+  }
 
   // Component for stat cards
   const StatCard = ({ title, value, icon, color }) => {
-    const className = `stat-card ${color}`;
+    const className = `stat-card ${color}`
 
     return (
       <motion.div whileHover={{ y: -5 }} className={className}>
@@ -1275,8 +2463,8 @@ const AdminDashboard = () => {
           </div>
         </div>
       </motion.div>
-    );
-  };
+    )
+  }
 
   if (!isAuthenticated) {
     return (
@@ -1310,11 +2498,7 @@ const AdminDashboard = () => {
               />
             </div>
             {loginError && (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="login-error"
-              >
+              <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="login-error">
                 {loginError}
               </motion.div>
             )}
@@ -1329,73 +2513,114 @@ const AdminDashboard = () => {
           </form>
         </motion.div>
       </div>
-    );
+    )
   }
 
   return (
     <div className="dashboard-container">
+      {/* Mobile Menu Button - Only visible on small screens */}
+      <button className={`mobile-menu-button ${sidebarOpen ? 'active' : ''}`} onClick={toggleSidebar}>
+        <Menu />
+      </button>
+      
       {/* Sidebar */}
-      <motion.div
-        initial={{ x: -100, opacity: 0 }}
-        animate={{ x: 0, opacity: 1 }}
-        transition={{ duration: 0.5 }}
-        className="sidebar"
-      >
-        <div className="sidebar-header">
-          <h2 className="sidebar-title">Admin Panel</h2>
-        </div>
-        <nav className="sidebar-nav">
-          <SidebarButton
-            icon={<Package />}
-            label="Items"
-            active={activeTab === "allStocks"}
-            onClick={() => setActiveTab("allStocks")}
-          />
-          <SidebarButton
-            icon={<PlusSquare />}
-            label="Add Items"
-            active={activeTab === "AddStock"}
-            onClick={() => setActiveTab("AddStock")}
-          />
-          <SidebarButton
-            icon={<Users />}
-            label="Manage Workers"
-            active={activeTab === "manageWorkers"}
-            onClick={() => setActiveTab("manageWorkers")}
-          />
-          <SidebarButton
-            icon={<BarChart2 />}
-            label="Sales Overview"
-            active={activeTab === "salesOverview"}
-            onClick={() => setActiveTab("salesOverview")}
-          />
-          <SidebarButton
-            icon={<Receipt />}
-            label="Transactions"
-            active={activeTab === "transactions"}
-            onClick={() => setActiveTab("transactions")}
-          />
-          <SidebarButton
-            icon={<ClipboardCheck />}
-            label="Stock Requests"
-            active={activeTab === "stockRequests"}
-            onClick={() => setActiveTab("stockRequests")}
-          />
-          <div className="sidebar-divider"></div>
-          <SidebarButton
-            icon={<LogOut />}
-            label="Logout"
-            onClick={() => {
-              localStorage.removeItem("token");
-              setIsAuthenticated(false);
-              navigate("/login");
-            }}
-          />
-        </nav>
-      </motion.div>
+      <AnimatePresence>
+        {sidebarOpen && (
+          <motion.div
+            initial={{ x: -300 }}
+            animate={{ x: 0 }}
+            exit={{ x: -300 }}
+            transition={{ type: "spring", stiffness: 300, damping: 30 }}
+            className={`sidebar ${sidebarOpen ? 'open' : ''}`}
+          >
+            <div className="sidebar-inner">
+              <div className="sidebar-header">
+                <h2 className="sidebar-title">Admin Panel</h2>
+                <button className="sidebar-close" onClick={toggleSidebar}>
+                  <X size={20} />
+                </button>
+              </div>
+              
+              <div className="sidebar-user">
+                <div className="sidebar-user-avatar">
+                  <span>A</span>
+                </div>
+                <div className="sidebar-user-info">
+                  <h3 className="sidebar-user-name">Admin User</h3>
+                  <p className="sidebar-user-role">Administrator</p>
+                </div>
+              </div>
+              
+              <div className="sidebar-divider"></div>
+              
+              <nav className="sidebar-nav">
+                <div className="sidebar-nav-section">
+                  <h4 className="sidebar-nav-title">Inventory</h4>
+                  <SidebarButton
+                    icon={<Package />}
+                    label="Items"
+                    active={activeTab === "allStocks"}
+                    onClick={() => setActiveTab("allStocks")}
+                  />
+                  <SidebarButton
+                    icon={<PlusSquare />}
+                    label="Add Items"
+                    active={activeTab === "AddStock"}
+                    onClick={() => setActiveTab("AddStock")}
+                  />
+                </div>
+                
+                <div className="sidebar-nav-section">
+                  <h4 className="sidebar-nav-title">Management</h4>
+                  <SidebarButton
+                    icon={<Users />}
+                    label="Manage Workers"
+                    active={activeTab === "manageWorkers"}
+                    onClick={() => setActiveTab("manageWorkers")}
+                  />
+                  <SidebarButton
+                    icon={<ClipboardCheck />}
+                    label="Stock Requests"
+                    active={activeTab === "stockRequests"}
+                    onClick={() => setActiveTab("stockRequests")}
+                  />
+                </div>
+                
+                <div className="sidebar-nav-section">
+                  <h4 className="sidebar-nav-title">Reports</h4>
+                  <SidebarButton
+                    icon={<BarChart2 />}
+                    label="Sales Overview"
+                    active={activeTab === "salesOverview"}
+                    onClick={() => setActiveTab("salesOverview")}
+                  />
+                  <SidebarButton
+                    icon={<Receipt />}
+                    label="Transactions"
+                    active={activeTab === "transactions"}
+                    onClick={() => setActiveTab("transactions")}
+                  />
+                </div>
+              </nav>
+              
+              <div className="sidebar-footer">
+                <SidebarButton
+                  icon={<LogOut />}
+                  label="Logout"
+                  onClick={() => {
+                    localStorage.removeItem("token")
+                    setIsAuthenticated(false)
+                    navigate("/login")
+                  }}
+                />
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Main Content */}
-      <div className="main-content">
+      <div className={`main-content ${sidebarOpen ? 'sidebar-open' : ''}`}>
         <AnimatePresence mode="wait">
           {activeTab === "allStocks" && (
             <TabContent key="allStocks">
@@ -1407,6 +2632,7 @@ const AdminDashboard = () => {
                     <Search />
                   </div>
                   <input
+                    ref={searchInputRef}
                     type="text"
                     placeholder="Search by Name, Brand, or Supplier"
                     value={searchTerm}
@@ -1442,7 +2668,7 @@ const AdminDashboard = () => {
                           (item) =>
                             (item.itemName?.toLowerCase() || "").includes(searchTerm) ||
                             (item.brand?.toLowerCase() || "").includes(searchTerm) ||
-                            (item.supplier?.toLowerCase() || "").includes(searchTerm)
+                            (item.supplier?.toLowerCase() || "").includes(searchTerm),
                         )
                         .map((item) => (
                           <motion.tr
@@ -1462,11 +2688,7 @@ const AdminDashboard = () => {
                             <TableCell>
                               <span
                                 className={`stock-badge ${
-                                  item.stock > 10
-                                    ? "high"
-                                    : item.stock > 0
-                                    ? "medium"
-                                    : "low"
+                                  item.stock > 10 ? "high" : item.stock > 0 ? "medium" : "low"
                                 }`}
                               >
                                 {item.stock} units
@@ -1662,9 +2884,7 @@ const AdminDashboard = () => {
                           <TableCell>{worker.name}</TableCell>
                           <TableCell>{worker.email}</TableCell>
                           <TableCell>
-                            <span className={`role-badge ${worker.role.toLowerCase()}`}>
-                              {worker.role}
-                            </span>
+                            <span className={`role-badge ${worker.role.toLowerCase()}`}>{worker.role}</span>
                           </TableCell>
                           <TableCell>
                             <div className="action-buttons">
@@ -1673,8 +2893,8 @@ const AdminDashboard = () => {
                                 whileTap={{ scale: 0.95 }}
                                 className="action-button update"
                                 onClick={() => {
-                                  const newPassword = prompt("Enter new password:");
-                                  if (newPassword) updateWorkerPassword(worker._id, newPassword);
+                                  const newPassword = prompt("Enter new password:")
+                                  if (newPassword) updateWorkerPassword(worker._id, newPassword)
                                 }}
                               >
                                 Update Password
@@ -1703,12 +2923,7 @@ const AdminDashboard = () => {
               <PageHeader title="Sales Overview" icon={<BarChart2 />} />
 
               <div className="stats-grid">
-                <StatCard
-                  title="Total Sales"
-                  value={`₹${totalSales.toFixed(2)}`}
-                  icon={<DollarSign />}
-                  color="green"
-                />
+                <StatCard title="Total Sales" value={`₹${totalSales.toFixed(2)}`} icon={<DollarSign />} color="green" />
                 <StatCard
                   title="Total GST Collected"
                   value={`₹${totalGST.toFixed(2)}`}
@@ -1778,7 +2993,7 @@ const AdminDashboard = () => {
                         .filter(
                           (inv) =>
                             inv.billId.toLowerCase().includes(transactionSearch) ||
-                            inv.customerName.toLowerCase().includes(transactionSearch)
+                            inv.customerName.toLowerCase().includes(transactionSearch),
                         )
                         .map((inv) => (
                           <motion.tr
@@ -1989,7 +3204,7 @@ const AdminDashboard = () => {
         </AnimatePresence>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default AdminDashboard;
+export default AdminDashboard

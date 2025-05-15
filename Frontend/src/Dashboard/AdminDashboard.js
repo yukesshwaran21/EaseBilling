@@ -2047,7 +2047,7 @@ import {
 } from "lucide-react"
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts"
 import { motion, AnimatePresence } from "framer-motion"
-import ".AdminDashboard.css"
+import "../Dashboard/AdminDashboard.css"
 
 // Axios instance with default headers
 const api = axios.create({

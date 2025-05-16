@@ -1478,8 +1478,8 @@ const CashierDashboard = () => {
 
   // Loading overlay component
   const LoadingOverlay = () => (
-    <div className="loading-overlay">
-      <div className="loading-spinner"></div>
+    <div className="cash-loading-overlay">
+      <div className="cash-loading-spinner"></div>
       <p>Processing...</p>
     </div>
   );
@@ -1487,38 +1487,38 @@ const CashierDashboard = () => {
   if (!isAuthenticated) {
     return (
       <motion.div 
-        className="login-container"
+        className="cash-login-container"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <div className="login-card">
-          <h2 className="login-title">Cashier Login</h2>
-          <form onSubmit={handleLogin} className="login-form">
-            <div className="form-group">
+        <div className="cash-login-card">
+          <h2 className="cash-login-title">Cashier Login</h2>
+          <form onSubmit={handleLogin} className="cash-login-form">
+            <div className="cash-form-group">
               <label>Email</label>
               <input
                 type="email"
                 value={loginForm.email}
                 onChange={(e) => setLoginForm({ ...loginForm, email: e.target.value })}
                 required
-                className="login-input"
+                className="cash-login-input"
               />
             </div>
-            <div className="form-group">
+            <div className="cash-form-group">
               <label>Password</label>
               <input
                 type="password"
                 value={loginForm.password}
                 onChange={(e) => setLoginForm({ ...loginForm, password: e.target.value })}
                 required
-                className="login-input"
+                className="cash-login-input"
               />
             </div>
-            {loginError && <div className="login-error">{loginError}</div>}
+            {loginError && <div className="cash-login-error">{loginError}</div>}
             <motion.button 
               type="submit" 
-              className="login-button"
+              className="cash-login-button"
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.98 }}
             >
@@ -1532,16 +1532,16 @@ const CashierDashboard = () => {
   }
 
   return (
-    <div className="dashboard-container">
+    <div className="cash-dashboard-container">
       <motion.div 
-        className="sidebar"
+        className="cash-sidebar"
         initial={{ x: -280 }}
         animate={{ x: 0 }}
         transition={{ duration: 0.3, ease: "easeOut" }}
       >
-        <h2 className="dashboard-title">Cashier Panel</h2>
+        <h2 className="cash-dashboard-title">Cashier Panel</h2>
         <motion.button 
-          className={`sidebar-button ${activeTab === "billing" ? "active" : ""}`} 
+          className={`cash-sidebar-button ${activeTab === "billing" ? "cash-active" : ""}`} 
           onClick={() => setActiveTab("billing")}
           whileHover={{ x: 5 }}
           whileTap={{ scale: 0.95 }}
@@ -1549,7 +1549,7 @@ const CashierDashboard = () => {
           <FaShoppingCart /> Billing
         </motion.button>
         <motion.button 
-          className={`sidebar-button ${activeTab === "history" ? "active" : ""}`} 
+          className={`cash-sidebar-button ${activeTab === "history" ? "cash-active" : ""}`} 
           onClick={() => setActiveTab("history")}
           whileHover={{ x: 5 }}
           whileTap={{ scale: 0.95 }}
@@ -1557,7 +1557,7 @@ const CashierDashboard = () => {
           <FaHistory /> History
         </motion.button>
         <motion.button 
-          className="sidebar-button logout-button" 
+          className="cash-sidebar-button cash-logout-button" 
           onClick={handleLogout}
           whileHover={{ x: 5 }}
           whileTap={{ scale: 0.95 }}
@@ -1566,7 +1566,7 @@ const CashierDashboard = () => {
         </motion.button>
       </motion.div>
 
-      <div className="admin-content">
+      <div className="cash-admin-content">
         <AnimatePresence mode="wait">
           {activeTab === "billing" && (
             <motion.div
@@ -1578,12 +1578,12 @@ const CashierDashboard = () => {
             >
               {!showBilling ? (
                 <motion.div 
-                  className="card customer-card"
+                  className="cash-card cash-customer-card"
                   variants={scaleIn}
                 >
-                  <h3 className="card-title">Customer Information</h3>
-                  <form onSubmit={handleCustomerSubmit} className="customer-form">
-                    <div className="form-group">
+                  <h3 className="cash-card-title">Customer Information</h3>
+                  <form onSubmit={handleCustomerSubmit} className="cash-customer-form">
+                    <div className="cash-form-group">
                       <label><FaUser /> Customer Name</label>
                       <input
                         type="text"
@@ -1591,10 +1591,10 @@ const CashierDashboard = () => {
                         value={customerName}
                         onChange={(e) => setCustomerName(e.target.value)}
                         required
-                        className="form-input"
+                        className="cash-form-input"
                       />
                     </div>
-                    <div className="form-group">
+                    <div className="cash-form-group">
                       <label><FaPhone /> Phone Number</label>
                       <input
                         type="tel"
@@ -1602,12 +1602,12 @@ const CashierDashboard = () => {
                         value={customerPhone}
                         onChange={(e) => setCustomerPhone(e.target.value)}
                         required
-                        className="form-input"
+                        className="cash-form-input"
                       />
                     </div>
                     <motion.button 
                       type="submit" 
-                      className="btn btn-primary"
+                      className="cash-btn cash-btn-primary"
                       whileHover={{ scale: 1.03 }}
                       whileTap={{ scale: 0.97 }}
                     >
@@ -1617,16 +1617,16 @@ const CashierDashboard = () => {
                 </motion.div>
               ) : (
                 <motion.div 
-                  className="billing-container"
+                  className="cash-billing-container"
                   initial="hidden"
                   animate="visible"
                   variants={fadeIn}
                 >
-                  <motion.div className="card billing-card" variants={scaleIn}>
-                    <div className="card-header">
-                      <h3 className="card-title">Generate Invoice</h3>
+                  <motion.div className="cash-card cash-billing-card" variants={scaleIn}>
+                    <div className="cash-card-header">
+                      <h3 className="cash-card-title">Generate Invoice</h3>
                       <motion.button 
-                        className="btn btn-outline"
+                        className="cash-btn cash-btn-outline"
                         onClick={() => setShowBilling(false)}
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
@@ -1635,33 +1635,33 @@ const CashierDashboard = () => {
                       </motion.button>
                     </div>
                     
-                    <div className="customer-info">
-                      <div className="info-item">
-                        <FaUser className="info-icon" />
+                    <div className="cash-customer-info">
+                      <div className="cash-info-item">
+                        <FaUser className="cash-info-icon" />
                         <span>{customerName}</span>
                       </div>
-                      <div className="info-item">
-                        <FaPhone className="info-icon" />
+                      <div className="cash-info-item">
+                        <FaPhone className="cash-info-icon" />
                         <span>{customerPhone}</span>
                       </div>
                     </div>
                     
-                    <div className="search-container">
-                      <div className="search-box">
-                        <FaSearch className="search-icon" />
+                    <div className="cash-search-container">
+                      <div className="cash-search-box">
+                        <FaSearch className="cash-search-icon" />
                         <input
                           type="text"
                           placeholder="Search items by name, brand, or supplier..."
                           value={searchQuery}
                           onChange={(e) => setSearchQuery(e.target.value.toLowerCase())}
-                          className="search-input"
+                          className="cash-search-input"
                         />
                       </div>
                       
                       <AnimatePresence>
                         {searchQuery && (
                           <motion.div 
-                            className="search-results"
+                            className="cash-search-results"
                             initial={{ opacity: 0, y: -10 }}
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, y: -10 }}
@@ -1677,26 +1677,26 @@ const CashierDashboard = () => {
                               .map((item) => (
                                 <motion.div 
                                   key={item._id} 
-                                  className="search-result-item"
+                                  className="cash-search-result-item"
                                   whileHover={{ backgroundColor: "rgba(124, 58, 237, 0.05)" }}
                                 >
-                                  <div className="item-details">
-                                    <div className="item-info">
+                                  <div className="cash-item-details">
+                                    <div className="cash-item-info">
                                       <h4>{item.itemName}</h4>
-                                      <p className="item-brand">{item.brand}</p>
-                                      <p className="item-specs">
+                                      <p className="cash-item-brand">{item.brand}</p>
+                                      <p className="cash-item-specs">
                                         <span>Amps: {item.amps}</span>
                                         <span>Watt: {item.watt}</span>
                                       </p>
-                                      <p className="item-stock">
+                                      <p className="cash-item-stock">
                                         Available Stock: {item.stock} units
                                       </p>
                                     </div>
-                                    <div className="item-price-info">
-                                      <p className="item-price">₹{item.sellingPrice}</p>
-                                      <p className="item-gst">GST: {item.gstTax}%</p>
+                                    <div className="cash-item-price-info">
+                                      <p className="cash-item-price">₹{item.sellingPrice}</p>
+                                      <p className="cash-item-gst">GST: {item.gstTax}%</p>
                                       <motion.button
-                                        className="btn btn-primary btn-sm"
+                                        className="cash-btn cash-btn-primary cash-btn-sm"
                                         onClick={() => addToCart(item)}
                                         disabled={item.stock <= 0}
                                         whileHover={{ scale: 1.05 }}
@@ -1715,41 +1715,41 @@ const CashierDashboard = () => {
                                 (item.brand || "").toLowerCase().includes(searchQuery) ||
                                 (item.supplier || "").toLowerCase().includes(searchQuery)
                             ).length === 0 && (
-                              <div className="search-result-item no-results">No products found.</div>
+                              <div className="cash-search-result-item cash-no-results">No products found.</div>
                             )}
                           </motion.div>
                         )}
                       </AnimatePresence>
                     </div>
 
-                    <div className="cart-section">
-                      <h4 className="section-title">Current Bill Items</h4>
+                    <div className="cash-cart-section">
+                      <h4 className="cash-section-title">Current Bill Items</h4>
                       
                       {cart.length === 0 ? (
-                        <div className="empty-cart">
-                          <FaShoppingCart className="empty-cart-icon" />
+                        <div className="cash-empty-cart">
+                          <FaShoppingCart className="cash-empty-cart-icon" />
                           <p>Your cart is empty. Search and add items to create a bill.</p>
                         </div>
                       ) : (
-                        <div className="cart-items">
+                        <div className="cash-cart-items">
                           {cart.map((item, index) => (
                             <motion.div 
                               key={index} 
-                              className="cart-item"
+                              className="cash-cart-item"
                               initial={{ opacity: 0, y: 10 }}
                               animate={{ opacity: 1, y: 0 }}
                               exit={{ opacity: 0, y: -10 }}
                               transition={{ duration: 0.2 }}
                             >
-                              <div className="item-name">{item.itemName}</div>
-                              <div className="item-quantity">
+                              <div className="cash-item-name">{item.itemName}</div>
+                              <div className="cash-item-quantity">
                                 <span>{item.quantity} × ₹{item.sellingPrice}</span>
                               </div>
-                              <div className="item-total">
+                              <div className="cash-item-total">
                                 ₹{(item.sellingPrice * item.quantity * (1 + item.gstTax / 100)).toFixed(2)}
                               </div>
                               <motion.button 
-                                className="remove-item-btn"
+                                className="cash-remove-item-btn"
                                 onClick={() => removeFromCart(item._id)}
                                 whileHover={{ scale: 1.1 }}
                                 whileTap={{ scale: 0.9 }}
@@ -1761,8 +1761,8 @@ const CashierDashboard = () => {
                         </div>
                       )}
 
-                      <div className="bill-summary">
-                        <div className="summary-row">
+                      <div className="cash-bill-summary">
+                        <div className="cash-summary-row">
                           <span>Subtotal:</span>
                           <span>
                             ₹
@@ -1775,7 +1775,7 @@ const CashierDashboard = () => {
                               .toFixed(2)}
                           </span>
                         </div>
-                        <div className="summary-row">
+                        <div className="cash-summary-row">
                           <span>GST:</span>
                           <span>
                             ₹
@@ -1792,7 +1792,7 @@ const CashierDashboard = () => {
                               .toFixed(2)}
                           </span>
                         </div>
-                        <div className="summary-row total">
+                        <div className="cash-summary-row cash-total">
                           <span>Total:</span>
                           <span>
                             ₹
@@ -1810,9 +1810,9 @@ const CashierDashboard = () => {
                         </div>
                       </div>
 
-                      <div className="bill-actions">
+                      <div className="cash-bill-actions">
                         <motion.button
-                          className="btn btn-danger"
+                          className="cash-btn cash-btn-danger"
                           onClick={() => {
                             setCart([]);
                             setCustomerName("");
@@ -1825,7 +1825,7 @@ const CashierDashboard = () => {
                           Cancel Bill
                         </motion.button>
                         <motion.button 
-                          className="btn btn-success" 
+                          className="cash-btn cash-btn-success" 
                           onClick={() => setShowPaymentModal(true)}
                           disabled={cart.length === 0}
                           whileHover={{ scale: 1.03 }}
@@ -1849,22 +1849,22 @@ const CashierDashboard = () => {
               exit="hidden"
               variants={fadeIn}
             >
-              <motion.div className="card history-card" variants={scaleIn}>
-                <h3 className="card-title">Transaction History</h3>
-                <div className="search-box">
-                  <FaSearch className="search-icon" />
+              <motion.div className="cash-card cash-history-card" variants={scaleIn}>
+                <h3 className="cash-card-title">Transaction History</h3>
+                <div className="cash-search-box">
+                  <FaSearch className="cash-search-icon" />
                   <input
                     type="text"
                     placeholder="Search by Bill ID, Customer Name, or Phone"
                     value={transactionSearch}
                     onChange={(e) => setTransactionSearch(e.target.value.toLowerCase())}
-                    className="search-input"
+                    className="cash-search-input"
                   />
                 </div>
 
-                <div className="table-wrapper">
-                  <div className="table-container">
-                    <table className="transaction-table">
+                <div className="cash-table-wrapper">
+                  <div className="cash-table-container">
+                    <table className="cash-transaction-table">
                       <thead>
                         <tr>
                           <th>Bill ID</th>
@@ -1909,7 +1909,7 @@ const CashierDashboard = () => {
                               <td>₹{transaction.totalBill.toFixed(2)}</td>
                               <td>
                                 <motion.button
-                                  className="btn btn-danger btn-icon"
+                                  className="cash-btn cash-btn-danger cash-btn-icon"
                                   onClick={() => handleDeleteInvoice(transaction._id)}
                                   title="Delete Invoice"
                                   whileHover={{ scale: 1.1 }}
@@ -1933,7 +1933,7 @@ const CashierDashboard = () => {
                           .includes(transactionSearch) ||
                         transaction.customerPhone.includes(transactionSearch)
                     ).length === 0 && (
-                      <div className="no-transactions">
+                      <div className="cash-no-transactions">
                         <p>No transactions found.</p>
                       </div>
                     )}
@@ -1948,23 +1948,23 @@ const CashierDashboard = () => {
       <AnimatePresence>
         {showSuccessPage && lastBillData && (
           <motion.div 
-            className="modal-overlay"
+            className="cash-modal-overlay"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
           >
             <motion.div 
-              className="success-modal"
+              className="cash-success-modal"
               initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.8, opacity: 0 }}
               transition={{ type: "spring", stiffness: 300, damping: 30 }}
             >
-              <div className="success-icon">
+              <div className="cash-success-icon">
                 <CheckCircle size={60} color="#43e97b" />
               </div>
-              <h2 className="success-title">Bill Generated Successfully!</h2>
-              <p className="success-message">You can now download the bill as a PDF and hand it to the customer.</p>
+              <h2 className="cash-success-title">Bill Generated Successfully!</h2>
+              <p className="cash-success-message">You can now download the bill as a PDF and hand it to the customer.</p>
               
               <PDFDownloadLink
                 document={
@@ -1988,7 +1988,7 @@ const CashierDashboard = () => {
                   />
                 }
                 fileName={`bill_${lastBillData.billId}.pdf`}
-                className="download-button"
+                className="cash-download-button"
               >
                 {({ loading }) => {
                   return loading ? 'Preparing PDF...' : 'Download Bill as PDF';
@@ -1996,7 +1996,7 @@ const CashierDashboard = () => {
               </PDFDownloadLink>
               
               <motion.button 
-                className="done-button"
+                className="cash-done-button"
                 onClick={() => {
                   setShowSuccessPage(false);
                   setLastBillData(null);
@@ -2017,22 +2017,22 @@ const CashierDashboard = () => {
       <AnimatePresence>
         {showPaymentModal && (
           <motion.div 
-            className="modal-overlay"
+            className="cash-modal-overlay"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
           >
             <motion.div 
-              className="modal-content payment-modal"
+              className="cash-modal-content cash-payment-modal"
               initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.8, opacity: 0 }}
               transition={{ type: "spring", stiffness: 300, damping: 30 }}
             >
-              <h3 className="modal-title">Select Payment Method</h3>
-              <div className="payment-options">
+              <h3 className="cash-modal-title">Select Payment Method</h3>
+              <div className="cash-payment-options">
                 <motion.button 
-                  className="payment-option cash"
+                  className="cash-payment-option cash-cash"
                   onClick={() => { 
                     setSelectedPaymentMethod("cash"); 
                     setShowInvoicePreview(true); 
@@ -2041,12 +2041,12 @@ const CashierDashboard = () => {
                   whileHover={{ scale: 1.05, boxShadow: "0 8px 20px rgba(0,0,0,0.1)" }}
                   whileTap={{ scale: 0.95 }}
                 >
-                  <FaMoneyBillWave className="payment-icon" />
+                  <FaMoneyBillWave className="cash-payment-icon" />
                   <span>Cash</span>
                 </motion.button>
                 
                 <motion.button 
-                  className="payment-option gpay"
+                  className="cash-payment-option cash-gpay"
                   onClick={() => { 
                     setSelectedPaymentMethod("gpay"); 
                     setShowQR(true); 
@@ -2055,12 +2055,12 @@ const CashierDashboard = () => {
                   whileHover={{ scale: 1.05, boxShadow: "0 8px 20px rgba(0,0,0,0.1)" }}
                   whileTap={{ scale: 0.95 }}
                 >
-                  <FaMobileAlt className="payment-icon" />
+                  <FaMobileAlt className="cash-payment-icon" />
                   <span>GPay</span>
                 </motion.button>
               </div>
               <motion.button 
-                className="btn btn-outline btn-cancel"
+                className="cash-btn cash-btn-outline cash-btn-cancel"
                 onClick={() => setShowPaymentModal(false)}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
@@ -2075,31 +2075,31 @@ const CashierDashboard = () => {
       <AnimatePresence>
         {showQR && (
           <motion.div 
-            className="modal-overlay"
+            className="cash-modal-overlay"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
           >
             <motion.div 
-              className="modal-content qr-modal"
+              className="cash-modal-content cash-qr-modal"
               initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.8, opacity: 0 }}
               transition={{ type: "spring", stiffness: 300, damping: 30 }}
             >
-              <h3 className="modal-title">Scan to Pay with GPay</h3>
+              <h3 className="cash-modal-title">Scan to Pay with GPay</h3>
               <motion.div 
-                className="qr-container"
+                className="cash-qr-container"
                 initial={{ y: 20, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ delay: 0.2 }}
               >
-                <img src={gpayQR || "/placeholder.svg"} alt="GPay QR Code" className="qr-image" />
+                <img src={gpayQR || "/placeholder.svg"} alt="GPay QR Code" className="cash-qr-image" />
               </motion.div>
-              <p className="upi-id">UPI ID: yukesshwaran6@okicici</p>
-              <div className="qr-actions">
+              <p className="cash-upi-id">UPI ID: yukesshwaran6@okicici</p>
+              <div className="cash-qr-actions">
                 <motion.button 
-                  className="btn btn-success"
+                  className="cash-btn cash-btn-success"
                   onClick={() => { 
                     setShowQR(false); 
                     setShowInvoicePreview(true); 
@@ -2110,7 +2110,7 @@ const CashierDashboard = () => {
                   <FaCheck /> I have paid
                 </motion.button>
                 <motion.button 
-                  className="btn btn-outline"
+                  className="cash-btn cash-btn-outline"
                   onClick={() => setShowQR(false)}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
@@ -2126,34 +2126,34 @@ const CashierDashboard = () => {
       <AnimatePresence>
         {showInvoicePreview && (
           <motion.div 
-            className="modal-overlay"
+            className="cash-modal-overlay"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
           >
             <motion.div 
-              className="modal-content invoice-preview-modal"
+              className="cash-modal-content cash-invoice-preview-modal"
               initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.8, opacity: 0 }}
               transition={{ type: "spring", stiffness: 300, damping: 30 }}
             >
-              <h3 className="modal-title">
-                <FaFileInvoice className="title-icon" /> Invoice Preview
+              <h3 className="cash-modal-title">
+                <FaFileInvoice className="cash-title-icon" /> Invoice Preview
               </h3>
-              <div className="invoice-preview">
-                <div className="invoice-header">
+              <div className="cash-invoice-preview">
+                <div className="cash-invoice-header">
                   <h4>Sai Ram Electrical</h4>
                   <p>10, Sathy Main Road, Gobichettipalayam, Erode-638115</p>
-                  <p className="bill-id">Bill ID: {billId}</p>
+                  <p className="cash-bill-id">Bill ID: {billId}</p>
                 </div>
                 
-                <div className="invoice-customer">
+                <div className="cash-invoice-customer">
                   <p><strong>Customer:</strong> {customerName}</p>
                   <p><strong>Phone:</strong> {customerPhone}</p>
                 </div>
                 
-                <div className="invoice-items">
+                <div className="cash-invoice-items">
                   <table>
                     <thead>
                       <tr>
@@ -2176,17 +2176,17 @@ const CashierDashboard = () => {
                   </table>
                 </div>
                 
-                <div className="invoice-summary">
-                  <div className="summary-row"><span>Total Amount:</span> <span>₹{subtotal.toFixed(2)}</span></div>
-                  <div className="summary-row"><span>Total GST:</span> <span>₹{gstAmount.toFixed(2)}</span></div>
-                  <div className="summary-row total"><span>Total Bill:</span> <span>₹{total.toFixed(2)}</span></div>
-                  <div className="summary-row"><span>Payment Method:</span> <span>{selectedPaymentMethod === 'gpay' ? 'GPay' : 'Cash'}</span></div>
+                <div className="cash-invoice-summary">
+                  <div className="cash-summary-row"><span>Total Amount:</span> <span>₹{subtotal.toFixed(2)}</span></div>
+                  <div className="cash-summary-row"><span>Total GST:</span> <span>₹{gstAmount.toFixed(2)}</span></div>
+                  <div className="cash-summary-row cash-total"><span>Total Bill:</span> <span>₹{total.toFixed(2)}</span></div>
+                  <div className="cash-summary-row"><span>Payment Method:</span> <span>{selectedPaymentMethod === 'gpay' ? 'GPay' : 'Cash'}</span></div>
                 </div>
               </div>
               
-              <div className="invoice-actions">
+              <div className="cash-invoice-actions">
                 <motion.button 
-                  className="btn btn-success"
+                  className="cash-btn cash-btn-success"
                   onClick={handleGenerateBill}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
@@ -2194,7 +2194,7 @@ const CashierDashboard = () => {
                   <FaCheck /> Generate {selectedPaymentMethod === 'gpay' ? 'Invoice' : 'Bill'}
                 </motion.button>
                 <motion.button 
-                  className="btn btn-outline"
+                  className="cash-btn cash-btn-outline"
                   onClick={() => setShowInvoicePreview(false)}
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}

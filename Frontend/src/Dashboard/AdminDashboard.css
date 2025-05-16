@@ -372,10 +372,11 @@ body {
   flex: 1;
   padding: 2rem;
   margin-left: 0;
+  width: 100%;
 }
 
 .content-container {
-  max-width: 1400px;
+  max-width: 100%;
   margin: 0 auto;
 }
 
@@ -385,6 +386,7 @@ body {
   border-radius: 0.75rem;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   padding: 1.5rem;
+  width: 100%;
 }
 
 @keyframes fadeIn {
@@ -964,6 +966,7 @@ body {
 
   .main-content {
     margin-left: 260px;
+    width: calc(100% - 260px);
   }
 
   .mobile-menu-button {

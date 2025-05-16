@@ -229,11 +229,11 @@ const PharmacistDashboard = () => {
   }
 
   return (
-    <div className="dashboard-wrapper">
+    <div className="labour-dashboard-wrapper">
       <AnimatePresence>
         {notification.visible && (
           <motion.div
-            className={`notification ${notification.type}`}
+            className={`labour-notification ${notification.type}`}
             initial={{ opacity: 0, y: -50 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -50 }}
@@ -243,22 +243,22 @@ const PharmacistDashboard = () => {
         )}
       </AnimatePresence>
 
-      <div className="dashboard-container">
+      <div className="labour-dashboard-container">
         <motion.div
-          className="sidebar"
+          className="labour-sidebar"
           initial={{ x: -300 }}
           animate={{ x: 0 }}
           transition={{ type: "spring", stiffness: 100 }}
         >
-          <div className="logo-container">
-            <h2 className="dashboard-title">Labour Dashboard</h2>
+          <div className="labour-logo-container">
+            <h2 className="labour-dashboard-title">Labour Dashboard</h2>
           </div>
 
-          <div className="nav-links">
+          <div className="labour-nav-links">
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className={`sidebar-button ${activeTab === "allStocks" ? "active" : ""}`}
+              className={`labour-sidebar-button ${activeTab === "allStocks" ? "active" : ""}`}
               onClick={() => setActiveTab("allStocks")}
             >
               <Package2 size={20} />
@@ -268,7 +268,7 @@ const PharmacistDashboard = () => {
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className={`sidebar-button ${activeTab === "AddStock" ? "active" : ""}`}
+              className={`labour-sidebar-button ${activeTab === "AddStock" ? "active" : ""}`}
               onClick={() => setActiveTab("AddStock")}
             >
               <ShoppingCart size={20} />
@@ -276,11 +276,11 @@ const PharmacistDashboard = () => {
             </motion.button>
           </div>
 
-          <div className="sidebar-footer">
+          <div className="labour-sidebar-footer">
             <motion.button
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
-              className="logout-button"
+              className="labour-logout-button"
               onClick={handleLogout}
             >
               <LogOut size={20} />
@@ -290,7 +290,7 @@ const PharmacistDashboard = () => {
         </motion.div>
 
         <motion.div
-          className="main-content"
+          className="labour-main-content"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.2 }}
@@ -299,40 +299,40 @@ const PharmacistDashboard = () => {
             {loading ? (
               <motion.div
                 key="loading"
-                className="loading-container"
+                className="labour-loading-container"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
               >
-                <Loader2 className="loading-spinner" size={40} />
+                <Loader2 className="labour-loading-spinner" size={40} />
                 <p>Loading data...</p>
               </motion.div>
             ) : activeTab === "allStocks" ? (
               <motion.div
                 key="allStocks"
-                className="content-section"
+                className="labour-content-section"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
                 transition={{ duration: 0.3 }}
               >
-                <div className="section-header">
+                <div className="labour-section-header">
                   <h1>Items Inventory</h1>
-                  <div className="search-container">
-                    <Search className="search-icon" size={18} />
+                  <div className="labour-search-container">
+                    <Search className="labour-search-icon" size={18} />
                     <input
                       type="text"
                       placeholder="Search by name, brand, or supplier..."
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value.toLowerCase())}
-                      className="search-input"
+                      className="labour-search-input"
                     />
                   </div>
                 </div>
 
-                <div className="table-container">
+                <div className="labour-table-container">
                   {Array.isArray(medicines) && medicines.length > 0 ? (
-                    <table className="data-table">
+                    <table className="labour-data-table">
                       <thead>
                         <tr>
                           <th>Item Name</th>
@@ -374,7 +374,7 @@ const PharmacistDashboard = () => {
                               <td>{med.inchMm || "N/A"}</td>
                               <td>{med.storageLocation || "N/A"}</td>
                               <td>
-                                <span className={`stock-badge ${Number.parseInt(med.stock) <= 10 ? "low" : "normal"}`}>
+                                <span className={`labour-stock-badge ${Number.parseInt(med.stock) <= 10 ? "low" : "normal"}`}>
                                   {med.stock || 0} units
                                 </span>
                               </td>
@@ -390,7 +390,7 @@ const PharmacistDashboard = () => {
                       </tbody>
                     </table>
                   ) : (
-                    <div className="empty-state">
+                    <div className="labour-empty-state">
                       <Package2 size={48} />
                       <p>No items available in inventory</p>
                     </div>
@@ -400,21 +400,21 @@ const PharmacistDashboard = () => {
             ) : (
               <motion.div
                 key="AddStock"
-                className="content-section"
+                className="labour-content-section"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -20 }}
                 transition={{ duration: 0.3 }}
               >
-                <div className="section-header">
+                <div className="labour-section-header">
                   <h1>Request New Items</h1>
                 </div>
 
-                <div className="form-container">
-                  <div className="form-grid">
-                    <div className="form-group">
+                <div className="labour-form-container">
+                  <div className="labour-form-grid">
+                    <div className="labour-form-group">
                       <label>
-                        Item Name <span className="required">*</span>
+                        Item Name <span className="labour-required">*</span>
                       </label>
                       <input
                         type="text"
@@ -424,7 +424,7 @@ const PharmacistDashboard = () => {
                       />
                     </div>
 
-                    <div className="form-group">
+                    <div className="labour-form-group">
                       <label>Brand</label>
                       <input
                         type="text"
@@ -434,9 +434,9 @@ const PharmacistDashboard = () => {
                       />
                     </div>
 
-                    <div className="form-group">
+                    <div className="labour-form-group">
                       <label>
-                        Amps <span className="required">*</span>
+                        Amps <span className="labour-required">*</span>
                       </label>
                       <input
                         type="text"
@@ -446,9 +446,9 @@ const PharmacistDashboard = () => {
                       />
                     </div>
 
-                    <div className="form-group">
+                    <div className="labour-form-group">
                       <label>
-                        Watt <span className="required">*</span>
+                        Watt <span className="labour-required">*</span>
                       </label>
                       <input
                         type="text"
@@ -458,7 +458,7 @@ const PharmacistDashboard = () => {
                       />
                     </div>
 
-                    <div className="form-group">
+                    <div className="labour-form-group">
                       <label>Inch/mm</label>
                       <input
                         type="text"
@@ -468,7 +468,7 @@ const PharmacistDashboard = () => {
                       />
                     </div>
 
-                    <div className="form-group">
+                    <div className="labour-form-group">
                       <label>Storage Location</label>
                       <input
                         type="text"
@@ -478,9 +478,9 @@ const PharmacistDashboard = () => {
                       />
                     </div>
 
-                    <div className="form-group">
+                    <div className="labour-form-group">
                       <label>
-                        Quantity <span className="required">*</span>
+                        Quantity <span className="labour-required">*</span>
                       </label>
                       <input
                         type="number"
@@ -490,7 +490,7 @@ const PharmacistDashboard = () => {
                       />
                     </div>
 
-                    <div className="form-group">
+                    <div className="labour-form-group">
                       <label>Expiry Date</label>
                       <input
                         type="date"
@@ -499,10 +499,10 @@ const PharmacistDashboard = () => {
                       />
                     </div>
 
-                    <div className="form-group">
+                    <div className="labour-form-group">
                       <label>Purchase Price</label>
-                      <div className="input-with-icon">
-                        <DollarSign size={16} className="input-icon" />
+                      <div className="labour-input-with-icon">
+                        <DollarSign size={16} className="labour-input-icon" />
                         <input
                           type="number"
                           placeholder="Enter purchase price"
@@ -512,10 +512,10 @@ const PharmacistDashboard = () => {
                       </div>
                     </div>
 
-                    <div className="form-group">
+                    <div className="labour-form-group">
                       <label>Selling Price</label>
-                      <div className="input-with-icon">
-                        <DollarSign size={16} className="input-icon" />
+                      <div className="labour-input-with-icon">
+                        <DollarSign size={16} className="labour-input-icon" />
                         <input
                           type="number"
                           placeholder="Enter selling price"
@@ -525,10 +525,10 @@ const PharmacistDashboard = () => {
                       </div>
                     </div>
 
-                    <div className="form-group">
+                    <div className="labour-form-group">
                       <label>GST/Tax Rate</label>
-                      <div className="input-with-icon">
-                        <Percent size={16} className="input-icon" />
+                      <div className="labour-input-with-icon">
+                        <Percent size={16} className="labour-input-icon" />
                         <input
                           type="number"
                           placeholder="Enter GST/tax rate"
@@ -538,10 +538,10 @@ const PharmacistDashboard = () => {
                       </div>
                     </div>
 
-                    <div className="form-group">
+                    <div className="labour-form-group">
                       <label>Manufacturer</label>
-                      <div className="input-with-icon">
-                        <Factory size={16} className="input-icon" />
+                      <div className="labour-input-with-icon">
+                        <Factory size={16} className="labour-input-icon" />
                         <input
                           type="text"
                           placeholder="Enter manufacturer"
@@ -551,12 +551,12 @@ const PharmacistDashboard = () => {
                       </div>
                     </div>
 
-                    <div className="form-group">
+                    <div className="labour-form-group">
                       <label>
-                        Supplier <span className="required">*</span>
+                        Supplier <span className="labour-required">*</span>
                       </label>
-                      <div className="input-with-icon">
-                        <Truck size={16} className="input-icon" />
+                      <div className="labour-input-with-icon">
+                        <Truck size={16} className="labour-input-icon" />
                         <input
                           type="text"
                           placeholder="Enter supplier name"
@@ -566,12 +566,12 @@ const PharmacistDashboard = () => {
                       </div>
                     </div>
 
-                    <div className="form-group">
+                    <div className="labour-form-group">
                       <label>
-                        Supplier Contact <span className="required">*</span>
+                        Supplier Contact <span className="labour-required">*</span>
                       </label>
-                      <div className="input-with-icon">
-                        <Phone size={16} className="input-icon" />
+                      <div className="labour-input-with-icon">
+                        <Phone size={16} className="labour-input-icon" />
                         <input
                           type="text"
                           placeholder="Enter 10-digit contact number"
@@ -581,22 +581,22 @@ const PharmacistDashboard = () => {
                       </div>
                     </div>
 
-                    <div className="form-group">
+                    <div className="labour-form-group">
                       <label>Image</label>
-                      <input type="file" onChange={handleImageChange} className="file-input" />
+                      <input type="file" onChange={handleImageChange} className="labour-file-input" />
                     </div>
                   </div>
 
                   <motion.button
                     whileHover={{ scale: 1.03 }}
                     whileTap={{ scale: 0.97 }}
-                    className="submit-button"
+                    className="labour-submit-button"
                     onClick={requestMedicine}
                     disabled={submitting}
                   >
                     {submitting ? (
                       <>
-                        <Loader2 className="loading-spinner-small" size={20} />
+                        <Loader2 className="labour-loading-spinner-small" size={20} />
                         <span>Submitting...</span>
                       </>
                     ) : (
@@ -610,14 +610,14 @@ const PharmacistDashboard = () => {
 
                 {requests.length > 0 && (
                   <motion.div
-                    className="requests-section"
+                    className="labour-requests-section"
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: 0.3 }}
                   >
                     <h2>Your Request History</h2>
-                    <div className="table-container">
-                      <table className="data-table requests-table">
+                    <div className="labour-table-container">
+                      <table className="labour-data-table labour-requests-table">
                         <thead>
                           <tr>
                             <th>Date</th>
@@ -651,7 +651,7 @@ const PharmacistDashboard = () => {
                               <td>{req.supplier || "N/A"}</td>
                               <td>{req.supplierContact || req.contact || "N/A"}</td>
                               <td>
-                                <span className={`status-badge ${req.status?.toLowerCase() || "pending"}`}>
+                                <span className={`labour-status-badge ${req.status?.toLowerCase() || "pending"}`}>
                                   {req.status || "Pending"}
                                 </span>
                               </td>

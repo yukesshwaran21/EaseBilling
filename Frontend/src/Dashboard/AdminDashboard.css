@@ -371,7 +371,7 @@ body {
 .main-content {
   flex: 1;
   padding: 2rem;
-  margin-left: 0;
+  margin-left: 100%;
   width: 100%;
 }
 

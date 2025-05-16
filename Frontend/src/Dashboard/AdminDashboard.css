@@ -371,7 +371,7 @@ body {
 .main-content {
   flex: 1;
   padding: 2rem;
-  margin-left: 100%;
+  margin-left: 0%;
   width: 100%;
 }
 
@@ -382,7 +382,8 @@ body {
 
   .main-content {
     margin-left: 260px;
-    width: calc(100% - 260px);
+    /* width: calc(100% - 260px); */
+    width: 100%;
     padding: 1.5rem;
   }
 
@@ -409,7 +410,7 @@ body {
 
 .content-section {
   animation: fadeIn 0.3s ease-out;
-  width: 1000%;
+  width: 100%;
 
   background-color: white;
   border-radius: 0.75rem;

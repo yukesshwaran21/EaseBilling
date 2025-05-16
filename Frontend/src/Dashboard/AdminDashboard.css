@@ -1209,19 +1209,151 @@
   .admin-metrics-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .admin-recent-sale-item {
     flex-direction: column;
     align-items: flex-start;
   }
-  
+
   .admin-recent-sale-icon {
     margin-bottom: 0.75rem;
     margin-right: 0;
   }
-  
+
   .admin-recent-sale-amount {
     align-items: flex-start;
     margin-top: 0.75rem;
+  }
+}
+
+/* Add styles for the enhanced transaction section */
+.admin-transaction-filters {
+  margin-bottom: 1.5rem;
+}
+
+.admin-transaction-filter-options {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+}
+
+.admin-filter-item {
+  display: flex;
+  align-items: center;
+  background-color: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  min-width: 180px;
+}
+
+.admin-filter-icon {
+  color: #6b7280;
+  height: 1rem;
+  width: 1rem;
+  margin-right: 0.5rem;
+}
+
+.admin-filter-select {
+  border: none;
+  background: transparent;
+  color: #4b5563;
+  font-size: 0.875rem;
+  width: 100%;
+  cursor: pointer;
+  outline: none;
+}
+
+.admin-transaction-summary {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.admin-transaction-stat {
+  flex: 1;
+  min-width: 200px;
+  background: white;
+  border-radius: 0.75rem;
+  padding: 1.25rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  border: 1px solid #f3f4f6;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.admin-transaction-stat:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08);
+}
+
+.admin-transaction-stat-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1f2937;
+  margin-bottom: 0.5rem;
+}
+
+.admin-transaction-stat-label {
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+.admin-transaction-card {
+  border-radius: 0.75rem;
+  overflow: hidden;
+}
+
+.admin-transaction-table th,
+.admin-transaction-table td {
+  padding: 1rem;
+}
+
+.admin-button-view {
+  background-color: #eff6ff;
+  color: #3b82f6;
+  border: 1px solid #bfdbfe;
+}
+
+.admin-button-view:hover {
+  background-color: #dbeafe;
+}
+
+.admin-transaction-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.admin-transaction-modal-status {
+  display: flex;
+  align-items: center;
+}
+
+.admin-transaction-modal-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+@media (max-width: 768px) {
+  .admin-transaction-summary {
+    flex-direction: column;
+  }
+
+  .admin-transaction-filter-options {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .admin-filter-item {
+    width: 100%;
+  }
+
+  .admin-transaction-modal-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
   }
 }

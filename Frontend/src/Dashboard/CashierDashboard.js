@@ -1114,8 +1114,7 @@ const CashierDashboard = () => {
       sellingPrice: Number(item.sellingPrice),
       gstTax: Number(item.gstTax)
     }));
-    // Debug log
-    console.log('Sending invoice payload:', {
+    const invoiceData = {
       billId,
       customerName,
       customerPhone,
@@ -1124,20 +1123,16 @@ const CashierDashboard = () => {
       totalGST: gstAmount,
       totalBill: total,
       paymentMethod: selectedPaymentMethod
-    });
+    };
+    if (selectedPaymentMethod === "gpay") {
+      invoiceData.paymentId = `PAY-${Date.now()}`;
+    }
+    // Debug log
+    console.log('Sending invoice payload:', invoiceData);
     try {
       setIsLoading(true);
       const token = localStorage.getItem("token");
-      const response = await axios.post("https://easebilling.onrender.com/api/generate-invoice", {
-        billId,
-        customerName,
-        customerPhone,
-        items: itemsPayload,
-        totalAmount: subtotal,
-        totalGST: gstAmount,
-        totalBill: total,
-        paymentMethod: selectedPaymentMethod
-      }, {
+      const response = await axios.post("https://easebilling.onrender.com/api/generate-invoice", invoiceData, {
         headers: { Authorization: `Bearer ${token}` }
       });
       if (response.status === 200) {

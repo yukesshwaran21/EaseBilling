@@ -473,7 +473,13 @@ const CashierDashboard = () => {
           billId,
           customerName,
           customerPhone,
-          medicines: selectedMedicines,
+          items: selectedMedicines.map(med => ({
+            itemId: med.medicineId || med._id,
+            itemName: med.medicineName || med.itemName,
+            quantity: med.quantity,
+            sellingPrice: med.sellingPrice,
+            gstTax: med.gstTaxRate || med.gstTax
+          })),
           totalAmount,
           totalGST,
           totalBill,
@@ -568,7 +574,13 @@ const CashierDashboard = () => {
         billId,
         customerName,
         customerPhone,
-        medicines: selectedMedicines,
+        items: selectedMedicines.map(med => ({
+          itemId: med.medicineId || med._id,
+          itemName: med.medicineName || med.itemName,
+          quantity: med.quantity,
+          sellingPrice: med.sellingPrice,
+          gstTax: med.gstTaxRate || med.gstTax
+        })),
         totalAmount,
         totalGST,
         totalBill,
@@ -690,20 +702,31 @@ const CashierDashboard = () => {
   const handleGPayPaymentComplete = async () => {
     try {
       setIsLoading(true);
-      // Generate the invoice
-      const response = await axios.post("https://easebilling.onrender.com/api/generate-invoice", {
+      // Use the same payload structure as handleGenerateBill
+      const token = localStorage.getItem("token");
+      const invoicePayload = {
         billId,
         customerName,
         customerPhone,
-        medicines: selectedMedicines,
-        totalAmount,
-        totalGST,
-        totalBill,
+        items: cart.map(item => ({
+          itemId: item._id,
+          itemName: item.itemName,
+          quantity: item.quantity,
+          sellingPrice: item.sellingPrice,
+          gstTax: item.gstTax
+        })),
+        totalAmount: subtotal,
+        totalGST: gstAmount,
+        totalBill: total,
         paymentMethod: "gpay"
-      });
-
-      if (response.status === 200) {
-        // Create and download PDF
+      };
+      const response = await axios.post(
+        "https://easebilling.onrender.com/api/generate-invoice",
+        invoicePayload,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      if (response.status === 200 && response.data) {
+        // Generate and download the PDF
         const doc = (
           <Document>
             <Page size="A4" style={styles.page}>
@@ -711,12 +734,10 @@ const CashierDashboard = () => {
                 <Text style={styles.title}>Sai Ram Electrical</Text>
                 <Text style={styles.subtitle}>10, Sathy Main Road, Gobichettipalayam, Erode-638115</Text>
                 <Text style={styles.billId}>Bill ID: {billId}</Text>
-                
                 <View style={styles.customerInfo}>
                   <Text>Customer Name: {customerName}</Text>
                   <Text>Phone: {customerPhone}</Text>
                 </View>
-
                 <View style={styles.table}>
                   <View style={styles.tableRow}>
                     <Text style={styles.tableHeader}>Item</Text>
@@ -724,31 +745,26 @@ const CashierDashboard = () => {
                     <Text style={styles.tableHeader}>Price</Text>
                     <Text style={styles.tableHeader}>Total</Text>
                   </View>
-                  
-                  {selectedMedicines.map((medicine, index) => (
+                  {cart.map((item, index) => (
                     <View key={index} style={styles.tableRow}>
-                      <Text style={styles.tableCell}>{medicine.medicineName}</Text>
-                      <Text style={styles.tableCell}>{medicine.quantity}</Text>
-                      <Text style={styles.tableCell}>₹{medicine.sellingPrice}</Text>
-                      <Text style={styles.tableCell}>₹{medicine.totalPrice}</Text>
+                      <Text style={styles.tableCell}>{item.itemName}</Text>
+                      <Text style={styles.tableCell}>{item.quantity}</Text>
+                      <Text style={styles.tableCell}>₹{item.sellingPrice}</Text>
+                      <Text style={styles.tableCell}>₹{(item.sellingPrice * item.quantity * (1 + (item.gstTax || 0) / 100)).toFixed(2)}</Text>
                     </View>
                   ))}
                 </View>
-
                 <View style={styles.summary}>
-                  <Text style={styles.summaryText}>Total Amount: ₹{totalAmount}</Text>
-                  <Text style={styles.summaryText}>Total GST: ₹{totalGST}</Text>
-                  <Text style={styles.summaryText}>Total Bill: ₹{totalBill}</Text>
+                  <Text style={styles.summaryText}>Total Amount: ₹{subtotal}</Text>
+                  <Text style={styles.summaryText}>Total GST: ₹{gstAmount}</Text>
+                  <Text style={styles.summaryText}>Total Bill: ₹{total}</Text>
                   <Text style={styles.summaryText}>Payment Method: GPay</Text>
                 </View>
-
                 <Text style={styles.footer}>Thank you for your purchase!</Text>
               </View>
             </Page>
           </Document>
         );
-
-        // Download PDF
         const blob = await pdf(doc).toBlob();
         const url = URL.createObjectURL(blob);
         const link = document.createElement('a');
@@ -758,21 +774,38 @@ const CashierDashboard = () => {
         link.click();
         document.body.removeChild(link);
         URL.revokeObjectURL(url);
-
-        // Update stock quantities
-        await updateStockQuantities(selectedMedicines);
-
-        // Show success page with bill preview
+        // Update stock quantities after successful bill generation
+        await updateStockQuantities(cart);
+        setCart([]);
+        setSubtotal(0);
+        setGstAmount(0);
+        setTotal(0);
+        setCustomerName("");
+        setCustomerPhone("");
         setInvoiceGenerated(true);
         setShowSuccessPage(true);
         setShowPaymentOptions(false);
         setShowGPayQR(false);
         setIsLoading(false);
+        alert("Bill generated successfully!");
+        await fetchStocks();
+      } else {
+        setShowGPayQR(false);
+        setIsLoading(false);
+        alert(
+          response.data && response.data.error
+            ? `GPay Invoice Error: ${response.data.error}`
+            : "Failed to generate invoice via GPay. Please try again or contact support."
+        );
       }
     } catch (err) {
-      console.error("Error processing GPay payment:", err);
-      alert("Error processing payment. Please try again.");
+      setShowGPayQR(false);
       setIsLoading(false);
+      let errorMsg = "Failed to generate invoice via GPay. Please try again or contact support.";
+      if (err.response && err.response.data && err.response.data.error) {
+        errorMsg = `GPay Invoice Error: ${err.response.data.error}`;
+      }
+      alert(errorMsg);
     }
   };
 
@@ -1073,48 +1106,38 @@ const CashierDashboard = () => {
       alert("Please add at least one item to the bill.");
       return;
     }
+    // Ensure all required fields are present and valid
+    const itemsPayload = cart.map(item => ({
+      itemId: item._id,
+      itemName: item.itemName,
+      quantity: Number(item.quantity),
+      sellingPrice: Number(item.sellingPrice),
+      gstTax: Number(item.gstTax)
+    }));
+    // Debug log
+    console.log('Sending invoice payload:', {
+      billId,
+      customerName,
+      customerPhone,
+      items: itemsPayload,
+      totalAmount: subtotal,
+      totalGST: gstAmount,
+      totalBill: total,
+      paymentMethod: selectedPaymentMethod
+    });
     try {
       setIsLoading(true);
       const token = localStorage.getItem("token");
-      // Get all items at once
-      const itemsResponse = await axios.get("https://easebilling.onrender.com/api/items", {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      const allItems = itemsResponse.data;
-      const itemsMap = new Map(allItems.map(item => [item._id, item]));
-      // Validate stock for all items in cart
-      for (const cartItem of cart) {
-        const item = itemsMap.get(cartItem._id);
-        if (!item) {
-          alert(`Item ${cartItem.itemName} is no longer available in stock.`);
-          setIsLoading(false);
-          return;
-        }
-        if (item.stock < cartItem.quantity) {
-          alert(`Insufficient stock for ${cartItem.itemName}. Only ${item.stock} units available.`);
-          setIsLoading(false);
-          return;
-        }
-      }
-      // If all validations pass, proceed with bill generation
-      const invoicePayload = {
+      const response = await axios.post("https://easebilling.onrender.com/api/generate-invoice", {
         billId,
         customerName,
         customerPhone,
-        items: cart.map(item => ({
-          itemId: item._id,
-          itemName: item.itemName,
-          quantity: item.quantity,
-          sellingPrice: item.sellingPrice,
-          gstTax: item.gstTax
-        })),
+        items: itemsPayload,
         totalAmount: subtotal,
         totalGST: gstAmount,
         totalBill: total,
         paymentMethod: selectedPaymentMethod
-      };
-      console.log('Sending invoice payload:', invoicePayload);
-      const response = await axios.post("https://easebilling.onrender.com/api/generate-invoice", invoicePayload, {
+      }, {
         headers: { Authorization: `Bearer ${token}` }
       });
       if (response.status === 200) {
@@ -1182,9 +1205,14 @@ const CashierDashboard = () => {
         setIsLoading(false);
       }
     } catch (error) {
-      console.error("Error generating bill:", error);
-      alert(error.response?.data?.error || "Error generating bill. Please try again.");
       setIsLoading(false);
+      console.error("Error generating bill:", error);
+      if (error.response) {
+        console.error("Backend error response:", error.response.data);
+        alert(error.response.data?.error || "Error processing payment. Please try again.");
+      } else {
+        alert("Error processing payment. Please try again.");
+      }
     }
   };
 

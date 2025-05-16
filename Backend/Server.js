@@ -56,13 +56,13 @@ const InvoiceSchema = new mongoose.Schema({
   totalBill: { type: Number, required: true },
   paymentMethod: {
     type: String,
-    enum: ["cash", "online"],
+    enum: ["cash", "online", "gpay"], // Added 'gpay' as a valid payment method
     required: true
   },
   paymentId: {
     type: String,
     required: function() {
-      return this.paymentMethod === "online";
+      return this.paymentMethod === "gpay";
     }
   },
   date: { type: Date, default: Date.now },
@@ -368,7 +368,7 @@ app.delete("/api/delete-medicine/:id", authenticateToken, async (req, res) => {
     }
 
     res.status(200).json({
-      message: "Medicine deleted successfully",
+      message: "Item deleted successfully",
       deletedItem: deletedItem
     });
   } catch (err) {

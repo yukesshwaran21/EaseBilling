@@ -9,26 +9,18 @@ import {
   FaBolt,
   FaShieldAlt,
   FaMobile,
-  FaCloud,
   FaArrowRight,
   FaStar,
   FaUsers,
   FaClock,
   FaCheckCircle,
   FaQuoteLeft,
-  FaIndustry,
-  FaCog,
   FaRocket,
-  FaLightbulb,
   FaChevronDown,
   FaChevronUp,
   FaPhone,
   FaEnvelope,
   FaMapMarkerAlt,
-  FaFacebook,
-  FaTwitter,
-  FaLinkedin,
-  FaInstagram,
   FaSpinner
 } from 'react-icons/fa';
 import './Homepage.css';
@@ -255,47 +247,24 @@ const Homepage = () => {
 
   const faqData = [
     {
-      question: "How quickly can I get started with EaseBilling?",
-      answer: "You can start using EaseBilling immediately after signing up. Our setup wizard will guide you through the initial configuration, and you'll be generating invoices within minutes."
+      question: "How do I add electrical items to my inventory?",
+      answer: "You can easily add electrical components, wires, switches, and equipment through our inventory management system. Simply enter the item details, specifications, and pricing information."
     },
     {
-      question: "Is my data secure with EaseBilling?",
-      answer: "Absolutely. We use bank-grade encryption, regular security audits, and comply with industry standards to ensure your data is always protected."
+      question: "Does EaseBilling handle GST calculations for electrical goods?",
+      answer: "Yes! Our system automatically calculates GST for electrical equipment and services based on the latest tax rates and regulations."
     },
     {
-      question: "Can I integrate EaseBilling with other tools?",
-      answer: "Yes! EaseBilling offers API access and integrations with popular accounting software, CRM systems, and other business tools."
+      question: "Can I generate invoices for electrical installations?",
+      answer: "Absolutely. Create professional invoices for electrical services, equipment sales, and installations with itemized billing and automatic total calculations."
     },
     {
-      question: "What kind of support do you provide?",
-      answer: "We offer 24/7 email support for all plans, with phone support and dedicated account managers available for higher-tier plans."
+      question: "How does the inventory tracking work?",
+      answer: "Track stock levels in real-time, get low stock alerts, and manage supplier information for all your electrical components and equipment."
     },
     {
-      question: "Can I cancel my subscription anytime?",
-      answer: "Yes, you can cancel your subscription at any time. We offer a 30-day money-back guarantee for new customers."
-    }
-  ];
-
-  const industries = [
-    { 
-      name: businessInsights.topSellingCategory || "Electrical Equipment", 
-      icon: <FaLightbulb />, 
-      count: realStats.loading ? "Loading..." : `${Math.floor(realStats.totalInvoices * 0.4)}+` 
-    },
-    { 
-      name: "Commercial Contractors", 
-      icon: <FaIndustry />, 
-      count: realStats.loading ? "Loading..." : `${Math.floor(realStats.totalInvoices * 0.3)}+` 
-    },
-    { 
-      name: "Industrial Services", 
-      icon: <FaCog />, 
-      count: realStats.loading ? "Loading..." : `${Math.floor(realStats.totalInvoices * 0.2)}+` 
-    },
-    { 
-      name: "Solar Installation", 
-      icon: <FaRocket />, 
-      count: realStats.loading ? "Loading..." : `${Math.floor(realStats.totalInvoices * 0.1)}+` 
+      question: "Is my electrical business data secure?",
+      answer: "Yes, we use bank-grade encryption and secure cloud storage to protect your business data, customer information, and financial records."
     }
   ];
 
@@ -428,8 +397,8 @@ const Homepage = () => {
             </h1>
             
             <p className="hero-subtitle">
-              Experience the future of electrical billing with our AI-powered platform. 
-              Streamline operations, boost efficiency, and scale your business with confidence.
+              Streamline your electrical business with automated invoicing, inventory management, 
+              and GST compliance for electrical contractors and suppliers.
             </p>
 
             <div className="hero-actions">
@@ -475,9 +444,9 @@ const Homepage = () => {
         {/* Enhanced Features Section */}
         <div className="features-section" id="features">
           <div className="section-header">
-            <h2 className="section-title">Powerful Features for Modern Businesses</h2>
+            <h2 className="section-title">Essential Features for Electrical Businesses</h2>
             <p className="section-subtitle">
-              Everything you need to manage your electrical billing operations efficiently
+              Everything you need to manage electrical invoicing and inventory efficiently
             </p>
           </div>
 
@@ -502,9 +471,9 @@ const Homepage = () => {
         {/* Benefits Section */}
         <div className="benefits-section" id="benefits">
           <div className="section-header">
-            <h2 className="section-title">Why Choose EaseBilling?</h2>
+            <h2 className="section-title">Why Choose EaseBilling for Electrical Business?</h2>
             <p className="section-subtitle">
-              Built for performance, designed for growth
+              Designed specifically for electrical contractors, suppliers, and service providers
             </p>
           </div>
 
@@ -549,9 +518,9 @@ const Homepage = () => {
         {/* Real Business Insights Section */}
         <div className="insights-section" id="insights">
           <div className="section-header">
-            <h2 className="section-title">Live Business Insights</h2>
+            <h2 className="section-title">Real-Time Electrical Business Insights</h2>
             <p className="section-subtitle">
-              Real-time data from our platform showing actual business performance
+              Live data from electrical contractors and suppliers using our platform
             </p>
           </div>
 
@@ -642,32 +611,12 @@ const Homepage = () => {
           )}
         </div>
 
-        {/* Industries Section */}
-        <div className="industries-section" id="industries">
-          <div className="section-header">
-            <h2 className="section-title">Trusted Across Industries</h2>
-            <p className="section-subtitle">
-              From residential to commercial, we serve electrical professionals everywhere
-            </p>
-          </div>
-
-          <div className="industries-grid">
-            {industries.map((industry, index) => (
-              <div key={index} className="industry-card">
-                <div className="industry-icon">{industry.icon}</div>
-                <h3 className="industry-name">{industry.name}</h3>
-                <p className="industry-count">{industry.count} businesses</p>
-              </div>
-            ))}
-          </div>
-        </div>
-
         {/* Testimonials Section */}
         <div className="testimonials-section" id="testimonials">
           <div className="section-header">
-            <h2 className="section-title">What Our Customers Say</h2>
+            <h2 className="section-title">What Electrical Professionals Say</h2>
             <p className="section-subtitle">
-              Real feedback from electrical professionals who trust EaseBilling
+              Real feedback from electrical contractors and suppliers using EaseBilling
             </p>
           </div>
 
@@ -709,9 +658,9 @@ const Homepage = () => {
         {/* Pricing Section */}
         <div className="pricing-section" id="pricing">
           <div className="section-header">
-            <h2 className="section-title">Choose Your Plan</h2>
+            <h2 className="section-title">Pricing for Electrical Businesses</h2>
             <p className="section-subtitle">
-              Flexible pricing for businesses of all sizes
+              Affordable plans designed for electrical contractors and suppliers
             </p>
           </div>
 
@@ -753,9 +702,9 @@ const Homepage = () => {
         {/* FAQ Section */}
         <div className="faq-section" id="faq">
           <div className="section-header">
-            <h2 className="section-title">Frequently Asked Questions</h2>
+            <h2 className="section-title">Electrical Billing FAQ</h2>
             <p className="section-subtitle">
-              Everything you need to know about EaseBilling
+              Common questions about managing electrical business with EaseBilling
             </p>
           </div>
 
@@ -780,14 +729,14 @@ const Homepage = () => {
         {/* Final CTA Section */}
         <div className="final-cta-section">
           <div className="final-cta-content">
-            <h2 className="final-cta-title">Start Your Free Trial Today</h2>
+            <h2 className="final-cta-title">Start Managing Your Electrical Business Today</h2>
             <p className="final-cta-description">
-              No credit card required. Get started in under 2 minutes.
+              Join electrical contractors and suppliers already using EaseBilling for efficient billing and inventory management.
             </p>
             
             <div className="final-cta-actions">
               <button className="primary-cta-button large" onClick={() => navigate('/login')}>
-                Start Free Trial
+                Get Started with Electrical Billing
                 <FaRocket className="button-icon" />
               </button>
             </div>
@@ -795,15 +744,15 @@ const Homepage = () => {
             <div className="final-cta-features">
               <div className="final-feature">
                 <FaCheckCircle className="check-icon" />
-                <span>14-day free trial</span>
+                <span>GST compliant invoicing</span>
               </div>
               <div className="final-feature">
                 <FaCheckCircle className="check-icon" />
-                <span>No setup fees</span>
+                <span>Electrical inventory tracking</span>
               </div>
               <div className="final-feature">
                 <FaCheckCircle className="check-icon" />
-                <span>Cancel anytime</span>
+                <span>Professional electrical invoices</span>
               </div>
             </div>
           </div>
@@ -818,19 +767,14 @@ const Homepage = () => {
               ⚡ EaseBilling
             </div>
             <p className="footer-description">
-              The complete billing solution for electrical businesses. 
+              Complete billing and inventory management solution for electrical contractors, 
+              suppliers, and service providers.
               {realStats.loading ? (
-                " Streamline your operations and grow your business."
+                " Streamline your electrical business operations."
               ) : (
-                ` Currently serving ${realStats.totalUsers}+ businesses with ${realStats.totalInvoices}+ invoices processed.`
+                ` Currently serving ${realStats.totalUsers}+ electrical businesses with ${realStats.totalInvoices}+ invoices processed.`
               )}
             </p>
-            <div className="social-links">
-              <button className="social-link"><FaFacebook /></button>
-              <button className="social-link"><FaTwitter /></button>
-              <button className="social-link"><FaLinkedin /></button>
-              <button className="social-link"><FaInstagram /></button>
-            </div>
           </div>
 
           <div className="footer-section">
@@ -838,8 +782,7 @@ const Homepage = () => {
             <ul>
               <li><a href="#features">Features</a></li>
               <li><a href="#pricing">Pricing</a></li>
-              <li><a href="#integrations">Integrations</a></li>
-              <li><a href="#api">API</a></li>
+              <li><a href="#support">Support</a></li>
             </ul>
           </div>
 
@@ -847,19 +790,15 @@ const Homepage = () => {
             <h4>Company</h4>
             <ul>
               <li><a href="#about">About Us</a></li>
-              <li><a href="#careers">Careers</a></li>
-              <li><a href="#blog">Blog</a></li>
-              <li><a href="#press">Press</a></li>
+              <li><a href="#contact">Contact</a></li>
             </ul>
           </div>
 
           <div className="footer-section">
-            <h4>Support</h4>
+            <h4>Legal</h4>
             <ul>
-              <li><a href="#help">Help Center</a></li>
-              <li><a href="#contact">Contact</a></li>
-              <li><a href="#status">Status</a></li>
-              <li><a href="#security">Security</a></li>
+              <li><a href="#privacy">Privacy Policy</a></li>
+              <li><a href="#terms">Terms of Service</a></li>
             </ul>
           </div>
 
@@ -872,11 +811,11 @@ const Homepage = () => {
               </div>
               <div className="contact-item">
                 <FaPhone className="contact-icon" />
-                <span>+1 (555) 123-4567</span>
+                <span>1800-ELECTRIC (1800-353-2842)</span>
               </div>
               <div className="contact-item">
                 <FaMapMarkerAlt className="contact-icon" />
-                <span>San Francisco, CA</span>
+                <span>Mumbai, India</span>
               </div>
             </div>
           </div>
@@ -893,13 +832,6 @@ const Homepage = () => {
           </div>
         </div>
       </footer>
-
-      {/* Floating Action Button */}
-      <div className="floating-action">
-        <button className="fab" onClick={() => navigate('/login')}>
-          <FaBolt />
-        </button>
-      </div>
     </div>
   );
 };

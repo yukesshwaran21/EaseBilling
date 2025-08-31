@@ -1,14 +1,34 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import { 
-  FaFileInvoiceDollar, 
-  FaBoxes, 
-  FaUsersCog, 
-  FaChartLine, 
+import './Homepage.css';
+// import axios from 'axios';
+import {
+  FaFileInvoiceDollar,
+  FaBoxes,
+  FaUsersCog,
+  FaChartLine,
   FaBolt,
-  FaShieldAlt
+  FaShieldAlt,
+  FaMobile,
+  FaClock,
+  FaUsers,
+  FaStar,
+  FaArrowRight,
+  FaCheckCircle,
+  FaQuoteLeft,
+  FaChevronUp,
+  FaChevronDown,
+  FaEnvelope,
+  FaPhone,
+  FaMapMarkerAlt,
+  FaRocket
 } from 'react-icons/fa';
+function Homepage() {
+  const navigate = useNavigate();
+  const [currentTime, setCurrentTime] = useState(new Date());
+  const [currentTestimonial, setCurrentTestimonial] = useState(0);
+  const [openFaq, setOpenFaq] = useState(null);
+
   const testimonials = [
     {
       name: "Amit Patel",
@@ -30,7 +50,7 @@ import {
 
   // Fetch real data on component mount
   useEffect(() => {
-    fetchRealData();
+    // fetchRealData();
   }, []);
 
   // Auto-rotate testimonials
@@ -123,22 +143,22 @@ import {
   const stats = [
     { 
       icon: <FaUsers />, 
-      number: realStats.loading ? <FaSpinner className="spin" /> : `${realStats.totalUsers}+`, 
+      number: '100+', 
       label: 'Active Users' 
     },
     { 
       icon: <FaFileInvoiceDollar />, 
-      number: realStats.loading ? <FaSpinner className="spin" /> : `${realStats.totalInvoices.toLocaleString()}+`, 
+      number: '10,000+', 
       label: 'Invoices Generated' 
     },
     { 
       icon: <FaStar />, 
-      number: realStats.loading ? <FaSpinner className="spin" /> : '4.9/5', 
+      number: '4.9/5', 
       label: 'User Rating' 
     },
     { 
       icon: <FaClock />, 
-      number: realStats.loading ? <FaSpinner className="spin" /> : '24/7', 
+      number: '24/7', 
       label: 'Support Available' 
     }
   ];
@@ -182,11 +202,7 @@ import {
           <div className="hero-content">
             <div className="hero-badge">
               <FaCheckCircle className="badge-icon" />
-              {realStats.loading ? (
-                "Loading live data..."
-              ) : (
-                `Trusted by ${realStats.totalUsers}+ businesses • ${realStats.totalInvoices}+ invoices generated`
-              )}
+              Trusted by 100+ businesses • 10,000+ invoices generated
             </div>
             
             <h1 className="hero-title">
@@ -322,91 +338,7 @@ import {
             </p>
           </div>
 
-          <div className="insights-grid">
-            <div className="insight-card">
-              <div className="insight-header">
-                <FaChartLine className="insight-icon" />
-                <h3>Total Revenue</h3>
-              </div>
-              <div className="insight-value">
-                {realStats.loading ? (
-                  <FaSpinner className="spin" />
-                ) : (
-                  `₹${realStats.totalRevenue.toLocaleString()}`
-                )}
-              </div>
-              <div className="insight-label">Generated through our platform</div>
-            </div>
-
-            <div className="insight-card">
-              <div className="insight-header">
-                <FaBoxes className="insight-icon" />
-                <h3>Inventory Items</h3>
-              </div>
-              <div className="insight-value">
-                {realStats.loading ? (
-                  <FaSpinner className="spin" />
-                ) : (
-                  realStats.totalItems.toLocaleString()
-                )}
-              </div>
-              <div className="insight-label">Items managed in inventory</div>
-            </div>
-
-            <div className="insight-card">
-              <div className="insight-header">
-                <FaFileInvoiceDollar className="insight-icon" />
-                <h3>Average Order</h3>
-              </div>
-              <div className="insight-value">
-                {realStats.loading ? (
-                  <FaSpinner className="spin" />
-                ) : (
-                  `₹${businessInsights.averageOrderValue.toFixed(0)}`
-                )}
-              </div>
-              <div className="insight-label">Average transaction value</div>
-            </div>
-
-            <div className="insight-card">
-              <div className="insight-header">
-                <FaRocket className="insight-icon" />
-                <h3>Monthly Growth</h3>
-              </div>
-              <div className="insight-value">
-                {realStats.loading ? (
-                  <FaSpinner className="spin" />
-                ) : (
-                  `+${businessInsights.monthlyGrowth.toFixed(1)}%`
-                )}
-              </div>
-              <div className="insight-label">Business growth this month</div>
-            </div>
-          </div>
-
-          {/* Recent Activity */}
-          {recentInvoices.length > 0 && (
-            <div className="recent-activity">
-              <h3>Recent Business Activity</h3>
-              <div className="activity-list">
-                {recentInvoices.map((invoice, index) => (
-                  <div key={invoice._id || index} className="activity-item">
-                    <div className="activity-icon">
-                      <FaFileInvoiceDollar />
-                    </div>
-                    <div className="activity-content">
-                      <div className="activity-title">
-                        Invoice #{invoice.billId} - {invoice.customerName}
-                      </div>
-                      <div className="activity-details">
-                        ₹{invoice.totalBill} • {new Date(invoice.date).toLocaleDateString()}
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
+          {/* Real-Time Insights and Recent Activity sections removed as requested */}
         </div>
 
         {/* Testimonials Section */}
@@ -453,49 +385,7 @@ import {
           </div>
         </div>
 
-        {/* Pricing Section */}
-        <div className="pricing-section" id="pricing">
-          <div className="section-header">
-            <h2 className="section-title">Pricing for Electrical Businesses</h2>
-            <p className="section-subtitle">
-              Affordable plans designed for electrical contractors and suppliers
-            </p>
-          </div>
-
-          <div className="pricing-grid">
-            {pricingPlans.map((plan, index) => (
-              <div key={index} className={`pricing-card ${plan.recommended ? 'recommended' : ''}`}>
-                {plan.recommended && <div className="recommended-badge">Most Popular</div>}
-                
-                <div className="pricing-header">
-                  <h3 className="plan-name">{plan.name}</h3>
-                  <div className="plan-price">
-                    <span className="price">{plan.price}</span>
-                    <span className="period">{plan.period}</span>
-                  </div>
-                  <p className="plan-description">{plan.description}</p>
-                </div>
-
-                <div className="pricing-features">
-                  {plan.features.map((feature, featureIndex) => (
-                    <div key={featureIndex} className="feature-item">
-                      <FaCheckCircle className="feature-check" />
-                      <span>{feature}</span>
-                    </div>
-                  ))}
-                </div>
-
-                <button 
-                  className={`plan-button ${plan.recommended ? 'primary' : 'secondary'}`}
-                  onClick={() => navigate('/login')}
-                >
-                  Get Started
-                  <FaArrowRight className="button-icon" />
-                </button>
-              </div>
-            ))}
-          </div>
-        </div>
+  {/* Pricing Section Removed */}
 
         {/* FAQ Section */}
         <div className="faq-section" id="faq">
@@ -566,12 +456,7 @@ import {
             </div>
             <p className="footer-description">
               Complete billing and inventory management solution for electrical contractors, 
-              suppliers, and service providers.
-              {realStats.loading ? (
-                " Streamline your electrical business operations."
-              ) : (
-                ` Currently serving ${realStats.totalUsers}+ electrical businesses with ${realStats.totalInvoices}+ invoices processed.`
-              )}
+              suppliers, and service providers. Streamline your electrical business operations.
             </p>
           </div>
 

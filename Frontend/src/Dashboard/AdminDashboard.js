@@ -10,7 +10,6 @@ import "../Dashboard/AdminDashboard.css"
 
 import { PieChart, Pie, Cell, LineChart, Line, Legend } from "recharts"
 
-// Axios instance with default headers
 const api = axios.create({
   baseURL: "https://easebilling.onrender.com/api",
 })

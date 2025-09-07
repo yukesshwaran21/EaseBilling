@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react"
 import axios from "axios"
-// 1. First, add the jsPDF import at the top with other imports
+
 import { Users, Receipt, PlusSquare, BarChart2, ClipboardCheck, Search, Trash2, CheckCircle, XCircle, LogOut, DollarSign, CreditCard, Package, Filter, Calendar, Plus, FileText, Menu, ArrowUpRight, Loader2, X, Clock, TrendingUp, ShoppingBag, Eye, Download, Printer, ArrowDown, CalendarIcon } from 'lucide-react'
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts"
 import { motion, AnimatePresence } from "framer-motion"

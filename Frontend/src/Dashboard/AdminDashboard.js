@@ -8,7 +8,6 @@ import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGri
 import { motion, AnimatePresence } from "framer-motion"
 import "../Dashboard/AdminDashboard.css"
 
-// Add these imports at the top with the other imports
 import { PieChart, Pie, Cell, LineChart, Line, Legend } from "recharts"
 
 // Axios instance with default headers
